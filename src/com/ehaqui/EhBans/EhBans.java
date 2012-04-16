@@ -41,7 +41,7 @@ public class EhBans extends JavaPlugin {
 	public EhUtil EhUtil 				= new EhUtil(this);
 	public log logManager				= new log(this);
 	
-	public double newVersion;
+    public double newVersion;
     public double currentVersion;
 	
     // Configuração
