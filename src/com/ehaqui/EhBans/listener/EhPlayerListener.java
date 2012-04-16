@@ -67,7 +67,8 @@ public class EhPlayerListener implements Listener {
 			log.info(playerName + " connected. Detected ip: " + playerIP + " Detected hostname: " + playerHostname);
 		}
 		
-		EhBansManager.addIpToHistory(playerName, playerIP);
+		if(plugin.logIps)
+		    EhBansManager.addIpToHistory(playerName, playerIP);
 		
     	if(EhBansManager.checkBan(playerName, playerIP))
     	{
@@ -116,7 +117,8 @@ public class EhPlayerListener implements Listener {
  				log.info(playerName + " connected. Detected ip: " + playerIP + " Detected hostname: " + playerHostname);
  			}
  			
- 			EhBansManager.addIpToHistory(playerName, playerIP);
+ 			if(plugin.logIps)
+ 			    EhBansManager.addIpToHistory(playerName, playerIP);
  			
  	    	if(EhBansManager.checkBan(playerName, playerIP))
  	    	{
