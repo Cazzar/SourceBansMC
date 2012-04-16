@@ -76,7 +76,7 @@ public class EhBans extends JavaPlugin {
     	pluginName 			= "[" +getDescription().getName() + "] ";
         pluginVersion 		= getDescription().getVersion();
 		
-        currentVersion = Double.valueOf(getDescription().getVersion().split("-")[0].replaceFirst("\\.", ""));
+        currentVersion      = Double.valueOf(getDescription().getVersion().replace(".", ""));
         
 		loadConfiguration();
 		
@@ -331,7 +331,7 @@ public class EhBans extends JavaPlugin {
                 Element firstNameElement = (Element) firstElementTagName.item(0);
                 NodeList firstNodes = firstNameElement.getChildNodes();
                 
-                return Double.valueOf(firstNodes.item(0).getNodeValue().replace("EhBans", "").replaceFirst(".", "").trim());
+                return Double.valueOf(firstNodes.item(0).getNodeValue().replace("EhBans", "").replace(".", "").trim());
             }
         }
         catch (Exception localException) {
