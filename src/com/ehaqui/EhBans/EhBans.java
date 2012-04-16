@@ -1,12 +1,20 @@
 package com.ehaqui.EhBans;
 
+import java.net.URL;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+import javax.xml.parsers.DocumentBuilderFactory;
+
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 import net.milkbowl.vault.permission.Permission;
 
@@ -32,6 +40,9 @@ public class EhBans extends JavaPlugin {
 	public EhBansManager EhBansManager 	= new EhBansManager(this);
 	public EhUtil EhUtil 				= new EhUtil(this);
 	public log logManager				= new log(this);
+	
+	public double newVersion;
+    public double currentVersion;
 	
     // Configuração
     public boolean debug 				= false;
@@ -62,6 +73,8 @@ public class EhBans extends JavaPlugin {
     	pluginName 			= "[" +getDescription().getName() + "] ";
         pluginVersion 		= getDescription().getVersion();
 		
+        currentVersion = Double.valueOf(getDescription().getVersion().split("-")[0].replaceFirst("\\.", ""));
+        
 		loadConfiguration();
 		
 		// permission
@@ -87,6 +100,7 @@ public class EhBans extends JavaPlugin {
         // Setup MySQL
         setupMySQL();
         
+        setupCheckUpdate();
     }
     
 
@@ -260,5 +274,56 @@ public class EhBans extends JavaPlugin {
   		return message;
   	}
   	
+  	
+  	public void setupCheckUpdate()
+  	{
+  	    // Schedule to check the version every 30 minutes for an update. This is to update the most recent 
+        // version so if an admin reconnects they will be warned about newer versions.
+        getServer().getScheduler().scheduleAsyncRepeatingTask(this, new Runnable() {
+
+            @Override
+            public void run() {
+                try {
+                    newVersion = updateCheck(currentVersion);
+                    
+                    if (newVersion > currentVersion) 
+                    {
+                        log.aviso("");
+                        log.aviso("EhBans " + newVersion + " is out! You are running: EhBans " + currentVersion);
+                        log.aviso("Update at: http://dev.bukkit.org/server-mods/ehbans");
+                        log.aviso("");
+                    }
+                } catch (Exception e) {
+                    // ignore exceptions
+                }
+            }
+
+        }, 0, 432000);
+  	}
+  	
+  	public double updateCheck(double currentVersion) throws Exception {
+        String pluginUrlString = "http://dev.bukkit.org/server-mods/ehbans/files.rss";
+        try {
+            URL url = new URL(pluginUrlString);
+            Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(url.openConnection().getInputStream());
+            doc.getDocumentElement().normalize();
+            NodeList nodes = doc.getElementsByTagName("item");
+            Node firstNode = nodes.item(0);
+            
+            if (firstNode.getNodeType() == 1) 
+            {
+                Element firstElement = (Element)firstNode;
+                NodeList firstElementTagName = firstElement.getElementsByTagName("title");
+                Element firstNameElement = (Element) firstElementTagName.item(0);
+                NodeList firstNodes = firstNameElement.getChildNodes();
+                
+                return Double.valueOf(firstNodes.item(0).getNodeValue().replace("EhBans", "").replaceFirst(".", "").trim());
+            }
+        }
+        catch (Exception localException) {
+        }
+        
+        return currentVersion;
+    }
   	
 }

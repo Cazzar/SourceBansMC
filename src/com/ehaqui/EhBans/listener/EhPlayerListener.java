@@ -81,6 +81,21 @@ public class EhPlayerListener implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) 
     {
+        Player player = event.getPlayer();
+        
+        // Update 
+        if (EhUtil.hasPermission(player, "admin")) {
+            try {
+                if (plugin.newVersion > plugin.currentVersion) {
+                    player.sendMessage(plugin.newVersion + " is out! You are running " + plugin.currentVersion);
+                    player.sendMessage("Update at: http://dev.bukkit.org/server-mods/ehbans");
+                }
+            } catch (Exception e) {
+                // Ignore exceptions
+            }
+        }
+        
+        
     	if (alternative == true) 
     	{
  			String playerName 		= event.getPlayer().getName();
