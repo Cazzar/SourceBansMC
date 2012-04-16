@@ -247,7 +247,7 @@ public class EhBansManager{
         	}
 
         	EhUtil.broadcastMessage("");
-        	EhUtil.broadcastMessage(plugin.plugin_refix + "por &c" + admName);
+        	EhUtil.broadcastMessage(plugin.plugin_prefix + "por &c" + admName);
         	EhUtil.broadcastMessage("&8-------------------------------");
         	EhUtil.broadcastMessage("&cPlayer: &e" + playerName);
         	EhUtil.broadcastMessage("&cRazao: &e" + razao);

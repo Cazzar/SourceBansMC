@@ -31,7 +31,7 @@ public class EhCommands implements CommandExecutor{
 	    	if(args.length > 0){
 	    		onBanCommand(sender, args);
 	    	}else{
-		    	EhUtil.sendMessage(sender, plugin.plugin_refix + " Comando Ban  &8-----------------");
+		    	EhUtil.sendMessage(sender, plugin.plugin_prefix + " Comando Ban  &8-----------------");
 		    	EhUtil.sendMessage(sender, "&c/ban [player] [tempo] [razao]");
 		    	EhUtil.sendMessage(sender, "");
 		    	EhUtil.sendMessage(sender, "&fTempo no formato: 1h = 1 hora, 1d = 1 dia, 1s = 1 semana");
@@ -50,7 +50,7 @@ public class EhCommands implements CommandExecutor{
 	    	if(args.length > 0){
 	    		onUnbanCommand(sender, args);
 	    	}else{
-	    		EhUtil.sendMessage(sender, plugin.plugin_refix + " Comando Unban  &8-----------------");
+	    		EhUtil.sendMessage(sender, plugin.plugin_prefix + " Comando Unban  &8-----------------");
 		    	EhUtil.sendMessage(sender, "&c/unban [player] [razao]");
 		    	EhUtil.sendMessage(sender, "");
 
@@ -68,7 +68,7 @@ public class EhCommands implements CommandExecutor{
 	    	if(args.length > 0){
 	    		onKickCommand(sender, args);
 	    	}else{
-	    		EhUtil.sendMessage(sender, plugin.plugin_refix + " Comando Unban  &8-----------------");
+	    		EhUtil.sendMessage(sender, plugin.plugin_prefix + " Comando Unban  &8-----------------");
 		    	EhUtil.sendMessage(sender, "&c/kick [player]");
 		    	EhUtil.sendMessage(sender, "");
 
@@ -85,7 +85,7 @@ public class EhCommands implements CommandExecutor{
 	    	if(args.length == 0)
 	    	{
 	    		EhUtil.broadcastMessage("");
-	        	EhUtil.broadcastMessage(plugin.plugin_refix + "por &c" + sender.getName());
+	        	EhUtil.broadcastMessage(plugin.plugin_prefix + "por &c" + sender.getName());
 	        	EhUtil.broadcastMessage("&8-------------------------------");
 	        	EhUtil.broadcastMessage("&cPlayer: &eSeuJuao");
 	        	EhUtil.broadcastMessage("&cRazao: &eNao pode Fazer isso!");
@@ -94,7 +94,7 @@ public class EhCommands implements CommandExecutor{
 	    	else
 	    	{
 	    		EhUtil.broadcastMessage("");
-	        	EhUtil.broadcastMessage(plugin.plugin_refix + "por &c" + sender.getName());
+	        	EhUtil.broadcastMessage(plugin.plugin_prefix + "por &c" + sender.getName());
 	        	EhUtil.broadcastMessage("&8-------------------------------");
 	        	EhUtil.broadcastMessage("&cPlayer: &eSeuJuao");
 	        	EhUtil.broadcastMessage("&cRazao: &e" + EhBansManager.arrayToString(args));
@@ -150,7 +150,7 @@ public class EhCommands implements CommandExecutor{
 	public void onBanHelpCommand(CommandSender sender, String[] args) 
 	{
     	EhUtil.sendMessage(sender,"");
-    	EhUtil.sendMessage(sender, plugin.plugin_refix + " Comando Ajuda  &8-----------------");
+    	EhUtil.sendMessage(sender, plugin.plugin_prefix + " Comando Ajuda  &8-----------------");
     	EhUtil.sendMessage(sender, "");
     	
     	if(EhUtil.hasPermission(sender, "ban"))
@@ -180,7 +180,7 @@ public class EhCommands implements CommandExecutor{
     {
     	plugin.reloadConfiguration();
 
-    	EhUtil.sendMessage(sender, plugin.plugin_refix + "&4As configuraçoes foram &2Recarregadas");
+    	EhUtil.sendMessage(sender, plugin.plugin_prefix + "&4As configuraçoes foram &2Recarregadas");
     }
     
     
@@ -219,7 +219,7 @@ public class EhCommands implements CommandExecutor{
     		player.kickPlayer(razao);
     		
     		EhUtil.broadcastMessage("");
-        	EhUtil.broadcastMessage(plugin.plugin_refix + "por &c" + sender.getName());
+        	EhUtil.broadcastMessage(plugin.plugin_prefix + "por &c" + sender.getName());
         	EhUtil.broadcastMessage("&8-------------------------------");
     		EhUtil.broadcastMessage(playerName + " &cfoi kicado do servidor");
     		
@@ -237,7 +237,7 @@ public class EhCommands implements CommandExecutor{
     public void onVersionCommand(CommandSender sender, String[] args) 
     {
     	EhUtil.sendMessage(sender,"");
-    	EhUtil.sendMessage(sender, plugin.plugin_refix + " Informacoes  &8-----------------");
+    	EhUtil.sendMessage(sender, plugin.plugin_prefix + " Informacoes  &8-----------------");
     	EhUtil.sendMessage(sender, "");
     	EhUtil.sendMessage(sender, "Versao: " + plugin.pluginVersion);
     	EhUtil.sendMessage(sender, "Desenvolvido por Lucas Didur");

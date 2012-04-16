@@ -22,7 +22,7 @@ public class EhBans extends JavaPlugin {
 	public Connection sql 				= null;
 	public Connection sql_mc			= null;
     
-    public String plugin_refix 			= "&7[&6Eh &aBans&7] &f";
+    public String plugin_prefix 	   = "&7[&6Eh &aBans&7] &f";
     
     public String pluginName 			= "";
     public  String pluginVersion 		= "";

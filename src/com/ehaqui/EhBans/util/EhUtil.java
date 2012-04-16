@@ -68,7 +68,7 @@ public class EhUtil {
 			 
 	    	for(int x = 0; x < messages.length; x++) 
 	    	{
-	    		sender.sendMessage(colorize(plugin.plugin_refix + " " +messages[x]));
+	    		sender.sendMessage(colorize(plugin.plugin_prefix + " " +messages[x]));
 	    	}
 		}
 		else
