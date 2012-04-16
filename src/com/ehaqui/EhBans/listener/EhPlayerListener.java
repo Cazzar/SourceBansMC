@@ -120,9 +120,10 @@ public class EhPlayerListener implements Listener {
  			
  	    	if(EhBansManager.checkBan(playerName, playerIP))
  	    	{
- 	        	EhBansManager.addBlockBan(playerName, playerIP);
- 	        	
  	        	event.getPlayer().kickPlayer(EhUtil.colorize(plugin.messageBan));
+ 	        	
+ 	        	if(plugin.logBlock)
+                    EhBansManager.addBlockBan(playerName, playerIP);
  			}
     	}
     }

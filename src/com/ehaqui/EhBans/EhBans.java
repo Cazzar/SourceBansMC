@@ -47,6 +47,9 @@ public class EhBans extends JavaPlugin {
     // Configuração
     public boolean debug 				= false;
     
+    public boolean logIps               = false;
+    public boolean logBlock             = true;
+    
     	// Config SourceBans
 	public String mysql_host			= "localhost";
 	public String mysql_port			= "3306";
@@ -198,6 +201,10 @@ public class EhBans extends JavaPlugin {
 
   		getConfig().addDefault("debug", debug);
   		
+  		getConfig().addDefault("log.ip", logIps);
+  		getConfig().addDefault("log.block", logBlock);
+  		
+  		
   		getConfig().addDefault("database.sourcebans.host", mysql_host);
   		getConfig().addDefault("database.sourcebans.port", mysql_port);
   		getConfig().addDefault("database.sourcebans.username", mysql_username);
@@ -220,6 +227,9 @@ public class EhBans extends JavaPlugin {
   		saveConfig();
   		
   		debug							= getConfig().getBoolean("debug");
+  		
+  		logIps                          = getConfig().getBoolean("log.ip");
+  		logBlock                        = getConfig().getBoolean("log.block");
   		
   		mysql_host						= getConfig().getString("database.sourcebans.host");
   		mysql_port						= getConfig().getString("database.sourcebans.port");
@@ -245,6 +255,9 @@ public class EhBans extends JavaPlugin {
   		reloadConfig();
   		
   		debug							= getConfig().getBoolean("debug");
+  		
+  		logIps                          = getConfig().getBoolean("log.ip");
+        logBlock                        = getConfig().getBoolean("log.block");
   		
   		mysql_host						= getConfig().getString("database.sourcebans.host");
   		mysql_port						= getConfig().getString("database.sourcebans.port");
@@ -277,6 +290,7 @@ public class EhBans extends JavaPlugin {
   	
   	public void setupCheckUpdate()
   	{
+  	    log.info("Setup Update Check");
   	    // Schedule to check the version every 30 minutes for an update. This is to update the most recent 
         // version so if an admin reconnects they will be warned about newer versions.
         getServer().getScheduler().scheduleAsyncRepeatingTask(this, new Runnable() {
@@ -298,7 +312,7 @@ public class EhBans extends JavaPlugin {
                 }
             }
 
-        }, 0, 432000);
+        }, 20, 432000);
   	}
   	
   	public double updateCheck(double currentVersion) throws Exception {
