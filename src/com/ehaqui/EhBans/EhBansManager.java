@@ -66,9 +66,9 @@ public class EhBansManager{
         	Statement st =  plugin.sql.createStatement();
 			ResultSet res = st.executeQuery(query);
         	
-			if(plugin.debug){
-				log.info(query);
-			}
+			
+			log.debug(query);
+			
 			
 			if(res.next()){
 				return true;
@@ -107,9 +107,7 @@ public class EhBansManager{
         	Statement st =  plugin.sql.createStatement();
 			ResultSet res = st.executeQuery(query);
         	
-			if(plugin.debug){
-				log.info(query);
-			}
+			log.debug(query);
 			
 			if(res.next()){
 				return true;
@@ -161,10 +159,14 @@ public class EhBansManager{
         					nick, 
         					ip
         					);
-            
+        	
+        	log.debug(query);
+        	
         	Statement st =  plugin.sql.createStatement();
         	st.executeUpdate(query);
 
+        	
+        	
         } catch (SQLException ex){
         	log.aviso(ex.getMessage());
         	
@@ -220,7 +222,7 @@ public class EhBansManager{
         int srvPort 			= plugin.getServer().getPort();
 
         try{
-            srvIP 	= InetAddress.getLocalHost().getHostAddress();
+            srvIP 	= plugin.getServer().getIp();
         }catch (Exception e){
         	System.out.println("Exception caught ="+e.getMessage());
         }
@@ -233,12 +235,10 @@ public class EhBansManager{
 					"('%s', '%s', 	'%s', UNIX_TIMESTAMP(), UNIX_TIMESTAMP() + %d, 	%d, 	'%s', IFNULL((SELECT aid FROM %sadmins WHERE user_mc = '%s'),'0'), '%s',	 (SELECT sid FROM %sservers WHERE ip = '%s' AND port = '%s' LIMIT 0,1), 	' '		, '1')", 
 					plugin.mysql_prefix, playerIP, playerName, playerName, tempo, tempo, razao, plugin.mysql_prefix, admName, admIP, plugin.mysql_prefix, srvIP, srvPort);
             
+    		log.debug(query);
+    		
         	Statement st =  plugin.sql.createStatement();
         	st.executeUpdate(query);
-        	
-        	if(plugin.debug){
-				log.info(query);
-			}
         	
         	if(player != null)
         	{
@@ -256,7 +256,14 @@ public class EhBansManager{
         	return true;
 
         } catch (SQLException ex) {
-        	log.aviso(ex.getMessage());
+            if(ex.getErrorCode() == 1048)
+            {
+                log.aviso("ERRO: Servidor nao cadastrado no SourceBans");
+                log.aviso("IP '%s' PORTA '%d'", srvIP, srvPort);
+                log.aviso("Esta correto estas informacoes?");
+                
+                EhUtil.sendMessage(sender, "&cERRO: Servidor nao cadastrado no SourceBans", true);
+            }
         	
         } finally {
             if (pst != null) {
@@ -324,6 +331,8 @@ public class EhBansManager{
     				plugin.mysql_prefix,
     				playerName);
     		
+    		log.debug(query);
+    		
     		st =  plugin.sql.createStatement();
     		
             rs = st.executeQuery(query);
@@ -341,7 +350,8 @@ public class EhBansManager{
         		log.aviso(ex.getMessage());
         	}
     	}
-            
+          
+    	
     	try {
 	    	query = String.format("UPDATE %sbans SET `RemovedBy` = (SELECT `aid` FROM %sadmins WHERE `user_mc` = '%s'), `RemoveType` = 'U', `RemovedOn` = UNIX_TIMESTAMP(), `ureason` = '%s' WHERE `bid` = %s;",
 	    			plugin.mysql_prefix,
@@ -349,7 +359,9 @@ public class EhBansManager{
 	    			sender.getName(),
 	    			unbanReason,
 	    			bid);
-	    	 
+	    	
+	    	log.debug(query);
+	    	
 	    	st =  plugin.sql.createStatement();
 	    	
 	    	st.executeUpdate(query);
