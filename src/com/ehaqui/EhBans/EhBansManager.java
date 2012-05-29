@@ -141,7 +141,7 @@ public class EhBansManager{
         String srvIP 			= null;
         
         try{
-            srvIP 	= InetAddress.getLocalHost().getHostAddress();
+            srvIP   = plugin.getServer().getIp();
         }catch (Exception e){
         	System.out.println("Exception caught ="+e.getMessage());
         }
