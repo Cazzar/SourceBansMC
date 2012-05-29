@@ -1,6 +1,5 @@
 package com.ehaqui.EhBans;
 
-import java.net.InetAddress;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
