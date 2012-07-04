@@ -29,7 +29,7 @@ public class EhPlayerListener implements Listener {
     }
     
     
-    @EventHandler(priority = EventPriority.HIGH)
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerLogin(PlayerLoginEvent event) 
     {
     	Player player = event.getPlayer();
@@ -79,7 +79,7 @@ public class EhPlayerListener implements Listener {
     }
     
     
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerJoin(PlayerJoinEvent event) 
     {
         Player player = event.getPlayer();
