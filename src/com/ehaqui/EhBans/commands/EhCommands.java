@@ -23,34 +23,34 @@ public class EhCommands implements CommandExecutor{
 			
 	    if(command.getName().equalsIgnoreCase("ban")){
 	    	
-	    	if(!EhUtil.hasPermission(sender, "ban")){
-	        	EhUtil.sendMessage(sender, "&cVoce nao tem prmissao para Banir");
+	    	if(!EhUtil.has(sender, "ban")){
+	        	EhUtil.sendMessage(sender, "&c" + plugin.t.s("COMMAND_BAN_NOPERMISSION"));
 	        	return true;
 	    	}
 	    	
 	    	if(args.length > 0){
 	    		onBanCommand(sender, args);
 	    	}else{
-		    	EhUtil.sendMessage(sender, plugin.plugin_prefix + " Comando Ban  &8-----------------");
+		    	EhUtil.sendMessage(sender, plugin.pluginPrefix + " " + plugin.t.s("COMMAND") + " Ban  &8-----------------");
 		    	EhUtil.sendMessage(sender, "&c/ban [player] [tempo] [razao]");
 		    	EhUtil.sendMessage(sender, "");
-		    	EhUtil.sendMessage(sender, "&fTempo no formato: 1h = 1 hora, 1d = 1 dia, 1s = 1 semana");
-		    	EhUtil.sendMessage(sender, "&fTempo no formato: 1mi = 1 min, 1m = 1 mês");
+		    	EhUtil.sendMessage(sender, "&f" + plugin.t.s("COMMAND_BAN_HELP1"));
+		    	EhUtil.sendMessage(sender, "&f" + plugin.t.s("COMMAND_BAN_HELP2"));
 	    	}
 	    	
 	    	success = true;
 		   
 	    }else if(command.getName().equalsIgnoreCase("unban")){
 	    	
-	    	if(!EhUtil.hasPermission(sender, "unban")){
-	        	EhUtil.sendMessage(sender, "&cVoce nao tem prmissao para Desbanir");
+	    	if(!EhUtil.has(sender, "unban")){
+	        	EhUtil.sendMessage(sender, "&c" + plugin.t.s("COMMAND_UNBAN_NOPERMISSION"));
 	        	return true;
 	    	}
 	    	
 	    	if(args.length > 0){
 	    		onUnbanCommand(sender, args);
 	    	}else{
-	    		EhUtil.sendMessage(sender, plugin.plugin_prefix + " Comando Unban  &8-----------------");
+	    		EhUtil.sendMessage(sender, plugin.pluginPrefix + " " + plugin.t.s("COMMAND") + " Unban  &8-----------------");
 		    	EhUtil.sendMessage(sender, "&c/unban [player] [razao]");
 		    	EhUtil.sendMessage(sender, "");
 
@@ -60,15 +60,15 @@ public class EhCommands implements CommandExecutor{
 	    	
 	    }else if(command.getName().equalsIgnoreCase("kick")){
 	    	
-	    	if(!EhUtil.hasPermission(sender, "kick")){
-	        	EhUtil.sendMessage(sender, "&cVoce nao tem prmissao para Kicar");
+	    	if(!EhUtil.has(sender, "kick")){
+	        	EhUtil.sendMessage(sender, "&c" + plugin.t.s("COMMAND_KICK_NOPERMISSION"));
 	        	return true;
 	    	}
 	    	
 	    	if(args.length > 0){
 	    		onKickCommand(sender, args);
 	    	}else{
-	    		EhUtil.sendMessage(sender, plugin.plugin_prefix + " Comando Unban  &8-----------------");
+	    		EhUtil.sendMessage(sender, plugin.pluginPrefix + " " + plugin.t.s("COMMAND") + " Kick  &8-----------------");
 		    	EhUtil.sendMessage(sender, "&c/kick [player]");
 		    	EhUtil.sendMessage(sender, "");
 
@@ -78,26 +78,26 @@ public class EhCommands implements CommandExecutor{
 	    	
 	    }else if(command.getName().equalsIgnoreCase("fban")){
 	    	
-	    	if(!EhUtil.hasPermission(sender, "fban", true)){
+	    	if(!EhUtil.has(sender, "fban", false)){
 	    		return true;
 	    	}
 	    	
 	    	if(args.length == 0)
 	    	{
 	    		EhUtil.broadcastMessage("");
-	        	EhUtil.broadcastMessage(plugin.plugin_prefix + "por &c" + sender.getName());
+	    		EhUtil.broadcastMessage(plugin.t.s("BAN_MESSAGE_HEADER"), plugin.pluginPrefix, sender.getName());
 	        	EhUtil.broadcastMessage("&8-------------------------------");
-	        	EhUtil.broadcastMessage("&cPlayer: &eSeuJuao");
-	        	EhUtil.broadcastMessage("&cRazao: &eNao pode Fazer isso!");
+	        	EhUtil.broadcastMessage("&c"+ plugin.t.s("BAN_MESSAGE_1") +" &eSeuJuao");
+	        	EhUtil.broadcastMessage("&c"+ plugin.t.s("BAN_MESSAGE_2") +" &eOrdem Aquiiiii!");
 	        	EhUtil.broadcastMessage("");
 	    	}
 	    	else
 	    	{
 	    		EhUtil.broadcastMessage("");
-	        	EhUtil.broadcastMessage(plugin.plugin_prefix + "por &c" + sender.getName());
+	        	EhUtil.broadcastMessage(plugin.t.s("BAN_MESSAGE_HEADER"), plugin.pluginPrefix, sender.getName());
 	        	EhUtil.broadcastMessage("&8-------------------------------");
-	        	EhUtil.broadcastMessage("&cPlayer: &eSeuJuao");
-	        	EhUtil.broadcastMessage("&cRazao: &e" + EhBansManager.arrayToString(args));
+	        	EhUtil.broadcastMessage("&c"+ plugin.t.s("BAN_MESSAGE_1") +" &eSeuJuao");
+	        	EhUtil.broadcastMessage("&c"+ plugin.t.s("BAN_MESSAGE_2") +" &e%s", EhBansManager.parseReson(args));
 	        	EhUtil.broadcastMessage("");
 	    	}
 	    	
@@ -111,11 +111,30 @@ public class EhCommands implements CommandExecutor{
 				onBanHelpCommand(sender, args);
 				
 				success = true;
+			
 				
-		    // Comando Mostrar Versao
+			// Comando SourceBans
+            }else if(args[0].equalsIgnoreCase("sb")){
+                
+                if(!EhUtil.has(sender, "admin", false))
+                {
+                    success = true;
+                    return true;
+                }
+                
+                if(args[1].equalsIgnoreCase("info"))
+                {
+                    getSBInfo(sender, args);
+                    success = true;
+                }
+                else
+                    success = false;
+                
+                
+            // Comando Mostrar Versao
 			}else if(args[0].equalsIgnoreCase("reload")){
 				
-				if(!EhUtil.hasPermission(sender, "admin", true)){
+				if(!EhUtil.has(sender, "admin", false)){
                 	success = true;
                 	return true;
 				}
@@ -136,7 +155,7 @@ public class EhCommands implements CommandExecutor{
 			
 		
 	    if (!success) {
-	    	EhUtil.sendMessage(sender, "&cArgumentos Invalidos! Use '/ebans help' para ver a lista de Comandos Validos.");
+	    	EhUtil.sendMessage(sender, "&c" + plugin.t.s("COMMAND_ERROR"), plugin.pluginCommand);
 	    }
 		     
 		return true;
@@ -144,31 +163,46 @@ public class EhCommands implements CommandExecutor{
 
 	 
 	 
-	/*
+	private void getSBInfo(CommandSender sender, String[] args) 
+	{
+	    
+	    String srvIP     = plugin.getServer().getIp();
+	    int srvPort      = plugin.getServer().getPort();
+        
+	    EhUtil.sendMessage(sender,"");
+	    EhUtil.sendMessage(sender, true, "SourceBans Info &8-----------------");
+	    EhUtil.sendMessage(sender,"");
+	    EhUtil.sendMessage(sender,"&cIP:    &e%s", srvIP);
+	    EhUtil.sendMessage(sender,"&cPorta: &e%s", srvPort);
+	    EhUtil.sendMessage(sender,"");   
+    }
+
+
+    /*
 	  * Comando Mostrar Uso do Chat
 	  */
 	public void onBanHelpCommand(CommandSender sender, String[] args) 
 	{
     	EhUtil.sendMessage(sender,"");
-    	EhUtil.sendMessage(sender, plugin.plugin_prefix + " Comando Ajuda  &8-----------------");
+    	EhUtil.sendMessage(sender, plugin.pluginPrefix + plugin.t.s("COMMAND_HELP") + " &8-----------------");
     	EhUtil.sendMessage(sender, "");
     	
-    	if(EhUtil.hasPermission(sender, "ban"))
-    		EhUtil.sendMessage(sender, "/ban [player] [tempo] [razao]  - &7Ban Player");
+    	if(EhUtil.has(sender, "ban"))
+    		EhUtil.sendMessage(sender, "/ban [player] [tempo] [razao]  - &7" + plugin.t.s("COMMAND_BAN"));
     	
-    	if(EhUtil.hasPermission(sender, "unban"))
-    		EhUtil.sendMessage(sender, "/unban [player] [razao]  - &7UnBan Player");
+    	if(EhUtil.has(sender, "unban"))
+    		EhUtil.sendMessage(sender, "/unban [player] [razao]  - &7" + plugin.t.s("COMMAND_UNBAN"));
     	
-    	if(EhUtil.hasPermission(sender, "kick"))
-    		EhUtil.sendMessage(sender, "/kick [player] <razao>  - &7Kicka o Player");
+    	if(EhUtil.has(sender, "kick"))
+    		EhUtil.sendMessage(sender, "/kick [player] <razao>  - &7" + plugin.t.s("COMMAND_KICK"));
     	
-    	if(EhUtil.hasPermission(sender, "fban"))
-    		EhUtil.sendMessage(sender, "/fban <razao>  - &7Envia uma Mensagem Fake de Ban");
+    	if(EhUtil.has(sender, "fban"))
+    		EhUtil.sendMessage(sender, "/fban <razao>  - &7" + plugin.t.s("COMMAND_BAN_FAKE"));
     	
-        if(EhUtil.hasPermission(sender, "reload"))
-        	EhUtil.sendMessage(sender, "/ehban reload  - &7Recarrega as configuraçoes");
+        if(EhUtil.has(sender, "reload"))
+        	EhUtil.sendMessage(sender, "/ehban reload  - &7" + plugin.t.s("COMMAND_RELOAD_CONFIG"));
         
-        EhUtil.sendMessage(sender, "/ehban versao - &7Mostra a versao do Plugin");
+        EhUtil.sendMessage(sender, "/ehban versao - &7" + plugin.t.s("COMMAND_PLINFO"));
 	}
 	
    
@@ -178,9 +212,9 @@ public class EhCommands implements CommandExecutor{
      */
     public void onReloadCommand(CommandSender sender, String[] args) 
     {
-    	plugin.reloadConfiguration();
+    	plugin.loadConfiguration();
 
-    	EhUtil.sendMessage(sender, plugin.plugin_prefix + "&4As configuraçoes foram &2Recarregadas");
+    	EhUtil.sendMessage(sender, plugin.pluginPrefix + "&4" + plugin.t.s("CONFIG_RELOAD_ALL"));
     }
     
     
@@ -198,7 +232,7 @@ public class EhCommands implements CommandExecutor{
      */
     public void onUnbanCommand(CommandSender sender, String[] args) 
     {
-        EhBansManager.removeBan(sender, args[0], args);
+        EhBansManager.removeBan(sender, args);
     }
     
     
@@ -211,17 +245,17 @@ public class EhCommands implements CommandExecutor{
     		args[0] = "";
     		
     		String playerName 	= player.getName();
-    		String razao 		= EhUtil.colorize("&cRazao: &e" + EhBansManager.arrayToString(args).trim());
+    		String razao 		= EhUtil.colorize("&c"+ plugin.t.s("BAN_MESSAGE_2") +" &e" + EhBansManager.parseReson(args));
     		
     		if(args.length == 1)
-    			razao = "Você foi Kicado do Servidor";
+    			razao = plugin.t.s("KICK_MESSAGE_DEFAULT");
     		
     		player.kickPlayer(razao);
     		
     		EhUtil.broadcastMessage("");
-        	EhUtil.broadcastMessage(plugin.plugin_prefix + "por &c" + sender.getName());
+        	EhUtil.broadcastMessage(plugin.t.s("BAN_MESSAGE_HEADER"), plugin.pluginPrefix, sender.getName());
         	EhUtil.broadcastMessage("&8-------------------------------");
-    		EhUtil.broadcastMessage(playerName + " &cfoi kicado do servidor");
+    		EhUtil.broadcastMessage("&c" + plugin.t.s("KICK_MESSAGE"), playerName);
     		
     		if(args.length > 2)
     			EhUtil.broadcastMessage(razao);
@@ -230,14 +264,14 @@ public class EhCommands implements CommandExecutor{
     	}
     	else
     	{
-    		EhUtil.sendMessage(sender, "&cO Player nao esta Online!");
+    		EhUtil.sendMessage(sender, "&c" + plugin.t.s("KICK_PLAYEROFFLINE"));
     	}    	
     }
     
     public void onVersionCommand(CommandSender sender, String[] args) 
     {
     	EhUtil.sendMessage(sender,"");
-    	EhUtil.sendMessage(sender, plugin.plugin_prefix + " Informacoes  &8-----------------");
+    	EhUtil.sendMessage(sender, plugin.pluginPrefix + " Informacoes  &8-----------------");
     	EhUtil.sendMessage(sender, "");
     	EhUtil.sendMessage(sender, "Versao: " + plugin.pluginVersion);
     	EhUtil.sendMessage(sender, "Desenvolvido por Lucas Didur");

@@ -14,20 +14,46 @@ public class EhUtil {
     {
         plugin = instance;
     }
-    
-    
-    /*
-     *  Tranforma o ID de Cores para Cores
+
+
+    /**
+     * Tranforma o ID de Cores para Cores
+     * 
+     * @param line - String nao tratada
+     * @return line
      */
-    public static String colorize(String message) 
-    {
+    public static String colorize(String line){
+        String[] Colours = {    "[color=black]", "[color=darkblue]", "[color=darkgreen]", "[color=darkaqua]", "[color=darkred]", "[color=darkpurple]", "[color=gold]", "[color=gray]",
+                                "[color=darkgray]", "[color=blue]", "[color=green]", "[color=aqua]", "[color=red]", "[color=lightpurple]", "[color=yellow]", "[color=white]", "[/color]",
+                                "[b]", "[s]", "[u]", "[i]", "[k]", "[r]",
+                                "[/b]", "[/s]", "[/u]", "[/i]", "[/k]"
+                              };
+        ChatColor[] cCode = {   ChatColor.BLACK, ChatColor.DARK_BLUE, ChatColor.DARK_GREEN, ChatColor.DARK_AQUA, ChatColor.DARK_RED, ChatColor.DARK_PURPLE, ChatColor.GOLD, ChatColor.GRAY,
+                                ChatColor.DARK_GRAY, ChatColor.BLUE, ChatColor.GREEN, ChatColor.AQUA, ChatColor.RED, ChatColor.LIGHT_PURPLE, ChatColor.YELLOW, ChatColor.WHITE, ChatColor.WHITE,
+                                ChatColor.BOLD, ChatColor.STRIKETHROUGH, ChatColor.UNDERLINE, ChatColor.ITALIC, ChatColor.MAGIC, ChatColor.RESET,
+                                ChatColor.RESET, ChatColor.RESET, ChatColor.RESET, ChatColor.RESET, ChatColor.RESET
+                              };
+        
+        for (int x = 0; x < Colours.length; x++) {
+            CharSequence cChkU = null;
+            CharSequence cChkL = null;
+
+            cChkU = Colours[x].toUpperCase();
+            cChkL = Colours[x].toLowerCase();
+            if (line.contains(cChkU) || line.contains(cChkL)) {
+                line = line.replace(cChkU, cCode[x].toString());
+                line = line.replace(cChkL, cCode[x].toString());
+            }
+        }
+        
         for (ChatColor color : ChatColor.values()) 
         {
-            message = message.replaceAll(String.format("&%c", color.getChar()), color.toString());
+            line = line.replaceAll(String.format("&%c", color.getChar()), color.toString());
         }
-
-        return message;
+        
+        return line;
     }
+    
     
     /**
      * 
@@ -72,7 +98,9 @@ public class EhUtil {
             }
             else
             {
-                String colorsStr = "([§|&][0-9|a-f])";
+                messages[x] = colorize(messages[x]);
+                
+                String colorsStr = "([§|&][0-9|a-r])";
                 messages[x] = messages[x].replaceAll(colorsStr, "");
                 
                 log.info(messages[x]); 
@@ -91,8 +119,11 @@ public class EhUtil {
             }
             else
             {
-                String colorsStr = "([§|&][0-9|a-f])";
+                messages[x] = colorize(messages[x]);
+                
+                String colorsStr = "([§|&][0-9|a-r])";
                 messages[x] = messages[x].replaceAll(colorsStr, "");
+                
                 
                 log.info(String.format(messages[x], txt)); 
             }
@@ -106,7 +137,7 @@ public class EhUtil {
      * @param message
      * @param prefix
      */
-    public static void sendMessage(Player sender, String message, boolean prefix) 
+    public static void sendMessage(Player player, boolean prefix, String message) 
     {
         if(prefix)
         {
@@ -114,7 +145,7 @@ public class EhUtil {
              
             for(int x = 0; x < messages.length; x++) 
             {
-                sender.sendMessage(colorize(plugin.plugin_prefix + " " +messages[x]));
+                player.sendMessage(colorize(plugin.pluginPrefix + " " + messages[x]));
             }
         }
         else
@@ -123,11 +154,11 @@ public class EhUtil {
              
             for(int x = 0; x < messages.length; x++) 
             {
-                sender.sendMessage(colorize(messages[x]));
+                player.sendMessage(colorize(messages[x]));
             }
         }
     }
-    public static void sendMessage(Player sender, String message, boolean prefix, Object... txt) 
+    public static void sendMessage(Player player, boolean prefix, String message, Object... txt) 
     {
         if(prefix)
         {
@@ -135,7 +166,7 @@ public class EhUtil {
              
             for(int x = 0; x < messages.length; x++) 
             {
-                sender.sendMessage(colorize(plugin.plugin_prefix + " " + String.format(messages[x], txt)));
+                player.sendMessage(colorize(plugin.pluginPrefix + " " + String.format(messages[x], txt)));
             }
         }
         else
@@ -144,11 +175,54 @@ public class EhUtil {
              
             for(int x = 0; x < messages.length; x++) 
             {
-                sender.sendMessage(colorize(String.format(messages[x], txt)));
+                player.sendMessage(colorize(String.format(messages[x], txt)));
             }
         }
     }
     
+    
+    public static void sendMessage(CommandSender sender, boolean prefix, String message) 
+    {
+        if(prefix)
+        {
+            String[] messages = message.split("\n");
+             
+            for(int x = 0; x < messages.length; x++) 
+            {
+                if(sender instanceof Player)
+                {
+                    sender.sendMessage(colorize(plugin.pluginPrefix + " " + messages[x]));
+                }
+                else
+                {
+                    messages[x] = colorize(messages[x]);
+                    messages[x] = messages[x].replaceAll("([§|&][0-9|a-r])", "");
+                    
+                    log.info(messages[x]); 
+                }
+                    
+            }
+        }
+        else
+        {
+            String[] messages = message.split("\n");
+             
+            for(int x = 0; x < messages.length; x++) 
+            {
+                if(sender instanceof Player)
+                {
+                    sender.sendMessage(colorize(messages[x]));
+                }
+                else
+                {
+                    messages[x] = colorize(messages[x]);
+                    messages[x] = messages[x].replaceAll("([§|&][0-9|a-r])", "");
+                    
+                    log.info(messages[x]); 
+                }
+            }
+        }
+    }
     
     
     /**
@@ -170,44 +244,24 @@ public class EhUtil {
          
         for(int x = 0; x < messages.length; x++) 
         {
-            plugin.getServer().broadcastMessage(colorize(String.format(messages[x]))); 
+            plugin.getServer().broadcastMessage(colorize(String.format(messages[x], txt))); 
         }
     }
     
     
-    public static boolean hasPermission(Player player, String permission)
+    public static boolean has(Player player, String permission)
     {
         String prefixPermission = plugin.prefixPermission;
         permission = prefixPermission + "." + permission;
         
-        
-        if(plugin.permission != null) 
-        {
-            if(plugin.permission.has(player, permission))
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-            
-        }
+        if(player.hasPermission(permission))
+            return true;
         else
-        {
-            if(player.hasPermission(permission))
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
+            return false;
     }
 
 
-    public static boolean hasPermission(CommandSender sender, String permission) 
+    public static boolean has(CommandSender sender, String permission) 
     {
         if(!(sender instanceof Player))
         {
@@ -220,34 +274,14 @@ public class EhUtil {
             String prefixPermission = plugin.prefixPermission;
             permission = prefixPermission + "." + permission;
             
-            
-            if(plugin.permission != null) 
-            {
-                if(plugin.permission.has(player, permission))
-                {
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-                
-            }
+            if(player.hasPermission(permission))
+                return true;
             else
-            {
-                if(player.hasPermission(permission))
-                {
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-            }
+                return false;
         }
     }
     
-    public static boolean hasPermission(CommandSender sender, String permission, boolean broadcast) 
+    public static boolean has(CommandSender sender, String permission, boolean vip) 
     {
         boolean result;
         
@@ -263,36 +297,23 @@ public class EhUtil {
             permission = prefixPermission + "." + permission;
             
             
-            if(plugin.permission != null) 
-            {
-                if(plugin.permission.has(player, permission))
-                {
-                    result = true;
-                }
-                else
-                {
-                    result = false;
-                }
-                
-            }
+            if(player.hasPermission(permission))
+                result = true;
             else
-            {
-                if(player.hasPermission(permission))
-                {
-                    result = true;
-                }
-                else
-                {
-                    result = false;
-                }
-            }
+                result = false;
         }
         
-        if(!result && broadcast)
-        {
-            sendMessage(sender, "&cVoce nao tem Permissao\n* Node: " + permission);
+        if(!result)
+        {   
+            if(!vip)
+                sendMessage(sender, "&cVoce nao tem Permissao\n* Node: " + permission);
+            else
+                sendMessage(sender, "&6&lEh &a&lAqui &r- Desculpe, Somente &bVIP&r tem permissao para usar esse comando!");
         }
         
         return result;
     }
+
+
+    
 }

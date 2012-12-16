@@ -4,6 +4,7 @@ version: 0.6.7.4
 author: Lucas Didur
 description: Manage Bans With SourceBans
 website: http://ehaqui.com
+depend: [Translate]
 commands:
     ehbans:
         description: 'Show main menu'

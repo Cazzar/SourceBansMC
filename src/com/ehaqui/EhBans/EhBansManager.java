@@ -4,9 +4,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -36,12 +35,12 @@ public class EhBansManager{
     public static boolean checkBan(String playerName, String playerIP) {
  	
     	if(isIpBanned(playerIP)){
-    		log.info("Banido - Player Conectado com um IP Banido");
+    		log.info(plugin.t.s("BAN_BANNED_IP"));
     		return true;
     	}
     	
     	if(isNickBanned(playerName)){
-    		log.info("Banido - Player conectando com Nick Banido");
+    		log.info(plugin.t.s("BAN_BANNED_NICK"));
     		return true;
     	}
     	
@@ -54,21 +53,15 @@ public class EhBansManager{
      * 
      */
     public static boolean isIpBanned(String ip) {
-        PreparedStatement pst = null;
         try {
-        	String query = String.format("SELECT * FROM `%sbans` " +
-        					"WHERE type = 1 AND ip = '%s' " +
-        					"AND (length = '0' OR ends > UNIX_TIMESTAMP()) " +
-        					"AND RemoveType IS NULL", 
-        					plugin.mysql_prefix, ip);
-            
-        	Statement st =  plugin.sql.createStatement();
-			ResultSet res = st.executeQuery(query);
+        	String query = String.format("SELECT * FROM `%sbans` WHERE type = 1 AND ip = '%s' AND (length = '0' OR ends > UNIX_TIMESTAMP()) AND RemoveType IS NULL", 
+        					plugin.mysql_prefix, 
+        					ip);
         	
-			
-			log.debug(query);
-			
-			
+        	log.debug(query);
+        	
+			ResultSet res = plugin.db.query(query);
+
 			if(res.next()){
 				return true;
 			}else{
@@ -78,13 +71,6 @@ public class EhBansManager{
         } catch (SQLException ex) {
         	log.aviso(ex.getMessage());
             return false;
-        } finally {
-            if (pst != null) {
-                try {
-                    pst.close();
-                } catch (SQLException ex) {
-                }
-            }
         }
     }
     
@@ -95,18 +81,14 @@ public class EhBansManager{
      * 
      */
     public static boolean isNickBanned(String nick) {
-        PreparedStatement pst = null;
         try {
-        	String query = String.format("SELECT * FROM `%sbans` " +
-        					"WHERE type = 1 AND name = '%s' " +
-        					"AND (length = '0' OR ends > UNIX_TIMESTAMP()) " +
-        					"AND RemoveType IS NULL", 
-        					plugin.mysql_prefix, nick);
-            
-        	Statement st =  plugin.sql.createStatement();
-			ResultSet res = st.executeQuery(query);
+        	String query = String.format("SELECT * FROM `%sbans` WHERE type = 1 AND name = '%s' AND (length = '0' OR ends > UNIX_TIMESTAMP()) AND RemoveType IS NULL", 
+        					plugin.mysql_prefix, 
+        					nick);
         	
-			log.debug(query);
+        	log.debug(query);
+        	
+			ResultSet res = plugin.db.query(query);
 			
 			if(res.next()){
 				return true;
@@ -117,13 +99,6 @@ public class EhBansManager{
         } catch (SQLException ex) {
         	log.aviso(ex.getMessage());
             return false;
-        } finally {
-            if (pst != null) {
-                try {
-                    pst.close();
-                } catch (SQLException ex) {
-                }
-            }
         }
     }
     
@@ -135,48 +110,25 @@ public class EhBansManager{
      * @param nick - Nick do Player
      * @param ip   - IP do Player
      */
-    public static void addBlockBan(String nick, String ip) {
-        PreparedStatement pst 	= null;
-        String srvIP 			= null;
+    public static void addBlockBan(String nick, String ip) 
+    {
+        String srvIP 	= plugin.getServer().getIp();
+        int srvPort 	= plugin.getServer().getPort();
         
-        try{
-            srvIP   = plugin.getServer().getIp();
-        }catch (Exception e){
-        	System.out.println("Exception caught ="+e.getMessage());
-        }
-        int srvPort 		= plugin.getServer().getPort();
+        String query = String.format("INSERT INTO %sbanlog (sid ,time ,name ,bid) VALUES ((SELECT sid FROM %sservers WHERE ip = '%s' AND port = '%s' LIMIT 0,1), UNIX_TIMESTAMP(), '%s', (SELECT bid FROM %sbans WHERE (name = '%s' OR ip = '%s') AND RemoveType IS NULL LIMIT 0,1))", 
+        				plugin.mysql_prefix, 
+        				plugin.mysql_prefix, 
+        				srvIP, 
+        				srvPort, 
+        				nick, 
+        				plugin.mysql_prefix, 
+        				nick, 
+        				ip
+        				);
         
-        try {
-        	String query = String.format("INSERT INTO %sbanlog (sid ,time ,name ,bid) " +
-        					"VALUES ((SELECT sid FROM %sservers WHERE ip = '%s' AND port = '%s' LIMIT 0,1), UNIX_TIMESTAMP(), '%s', (SELECT bid FROM %sbans WHERE (name = '%s' OR ip = '%s') AND RemoveType IS NULL LIMIT 0,1))", 
-        					plugin.mysql_prefix, 
-        					plugin.mysql_prefix, 
-        					srvIP, 
-        					srvPort, 
-        					nick, 
-        					plugin.mysql_prefix, 
-        					nick, 
-        					ip
-        					);
+        log.debug(query);
         	
-        	log.debug(query);
-        	
-        	Statement st =  plugin.sql.createStatement();
-        	st.executeUpdate(query);
-
-        	
-        	
-        } catch (SQLException ex){
-        	log.aviso(ex.getMessage());
-        	
-        } finally {
-            if (pst != null) {
-                try {
-                    pst.close();
-                } catch (SQLException ex) {
-                }
-            }
-        }
+        plugin.db.update(query);
     }
     
     
@@ -184,50 +136,66 @@ public class EhBansManager{
     /**
      * Adiciona o ban
      * 
+     * /ban Player Tempo Razao
+     * 
      * @param sender
      * @param args
      * @return
      */
-    public static boolean addBan(CommandSender sender, String[] args) 
+    public static boolean addBan(CommandSender admin, String[] args) 
     {
-    	List<String> argumentos = new ArrayList<String>(Arrays.asList(args));
+        Player player;
+        String playerName;
+        String playerIP;
+        
+        int tempo;
+        String razao;
+        
+        String admName;
+        String admIP = "";
+        
+        String srvIP;
+        int srvPort;
+        
+    	String unmatchedPlayerName = args[0];
+    	player = plugin.getServer().getPlayer(unmatchedPlayerName);
+    	playerName 		= player != null ? player.getName() : unmatchedPlayerName;
     	
-    	String unmatchedPlayerName = argumentos.get(0); argumentos.remove(0);
+        playerIP 		= plugin.banIP ? 
+                                player != null ? 
+                                        player.getAddress().toString().substring(1).split(":")[0] : 
+                                        "" : 
+                                "";
+               
     	
-    	Player player = plugin.getServer().getPlayer(unmatchedPlayerName);
-    
+    	tempo 			= (args.length > 1) ? getTime(args[1]) : 0;   
     	
-    	String playerName 		= player != null ? player.getName() : unmatchedPlayerName;
-        String playerIP 		= player != null ? player.getAddress().toString().substring(1).split(":")[0] : "";
+    	args[0] = ""; 
     	
-    	int tempo 				= (argumentos.size() >= 1) ? formatBan(argumentos.get(0)) : 0;
+    	if((tempo != 0)) 
+    	    args[1] = "";
     	
-    	if(argumentos.size() >= 1)
-    			argumentos.remove(0);
+    	if(args.length > 1)
+    	    if(args[1].equals("0"))
+    	        args[1] = "";
+    	            
+    	        
     	
-    	String razao 			= EhUtil.colorize(combineString(argumentos, " "));
-    	banReson 				= razao;
+    	razao 			= banReson = parseReson(args);
     	
-    	String admName 			= sender.getName();
-    	String admIP			= "";
+    	admName 		= admin.getName();
     	
-    	if(sender instanceof Player)
+    	if(admin instanceof Player)
     	{
-    		Player adm 			= (Player) sender;
-    		admIP 				= adm.getAddress().toString().substring(1).split(":")[0];
+    		Player adm 	= (Player) admin;
+    		admIP 		= adm.getAddress().toString().substring(1).split(":")[0];
     	}
     	
-        String srvIP 			= null;
-        int srvPort 			= plugin.getServer().getPort();
-
-        try{
-            srvIP 	= plugin.getServer().getIp();
-        }catch (Exception e){
-        	System.out.println("Exception caught ="+e.getMessage());
-        }
+        srvIP 			= plugin.getServer().getIp();
+        srvPort 		= plugin.getServer().getPort();
     	
         PreparedStatement pst 	= null;
-
+        
     	try {
     		String query = String.format("INSERT INTO %sbans " +
     				"(ip, 	authid, name, created, 			ends, 					length, reason, aid, 														adminIp, sid, 																		country , type) VALUES " +
@@ -236,20 +204,21 @@ public class EhBansManager{
             
     		log.debug(query);
     		
-        	Statement st =  plugin.sql.createStatement();
+        	Statement st =  plugin.db.getConnection().createStatement();
         	st.executeUpdate(query);
         	
         	if(player != null)
         	{
-        		player.kickPlayer(banReson);
-        		plugin.lastBanReson = banReson;
+        	    plugin.lastBanReson = plugin.t.s("BAN_BANNED") + " " +plugin.t.s("BAN_MESSAGE_2") + banReson;
+        		player.kickPlayer(plugin.lastBanReson);
         	}
 
         	EhUtil.broadcastMessage("");
-        	EhUtil.broadcastMessage(plugin.plugin_prefix + "por &c" + admName);
+        	EhUtil.broadcastMessage(plugin.t.s("BAN_MESSAGE_HEADER"), plugin.pluginPrefix, "&c" + admName);
         	EhUtil.broadcastMessage("&8-------------------------------");
-        	EhUtil.broadcastMessage("&cPlayer: &e" + playerName);
-        	EhUtil.broadcastMessage("&cRazao: &e" + razao);
+        	EhUtil.broadcastMessage("&c" + plugin.t.s("BAN_MESSAGE_1") + "&e" + playerName);
+        	EhUtil.broadcastMessage("&c" + plugin.t.s("BAN_MESSAGE_2") + "&e" + razao);
+        	EhUtil.broadcastMessage("&c" + plugin.t.s("BAN_MESSAGE_3"), "&e" + getDate(tempo));
         	EhUtil.broadcastMessage("");
 
         	return true;
@@ -257,11 +226,11 @@ public class EhBansManager{
         } catch (SQLException ex) {
             if(ex.getErrorCode() == 1048)
             {
-                log.aviso("ERRO: Servidor nao cadastrado no SourceBans");
-                log.aviso("IP '%s' PORTA '%d'", srvIP, srvPort);
-                log.aviso("Esta correto estas informacoes?");
+                log.aviso(plugin.t.s("ERROR_SOURCEBANS_NOTSETUP1"));
+                log.aviso(plugin.t.s("ERROR_SOURCEBANS_NOTSETUP2"), srvIP, srvPort);
+                log.aviso(plugin.t.s("ERROR_SOURCEBANS_NOTSETUP3"));
                 
-                EhUtil.sendMessage(sender, "&cERRO: Servidor nao cadastrado no SourceBans", true);
+                EhUtil.sendMessage(admin, "&c" + plugin.t.s("ERROR_SOURCEBANS_NOTSETUP1"), true);
             }
         	
         } finally {
@@ -278,7 +247,7 @@ public class EhBansManager{
 
     }
     
-    public static int formatBan(String duracao)
+    public static int getTime(String duracao)
     {
     	// Ban 0
     	int time = 0;
@@ -308,8 +277,12 @@ public class EhBansManager{
     		time = Integer.parseInt(duracao.replaceAll("m", "")) * 60 * 60 * 24 * 30;
     	}
     	
-    	log.debug("tempo: " + time);
-		
+    	// Segundos
+    	else if (isInteger(duracao))
+    	{
+    	    time = Integer.valueOf(duracao);
+    	}
+    	
     	return time;
     }
     
@@ -317,13 +290,16 @@ public class EhBansManager{
     /*
 	 *  Adiciona o ban
 	 */
-    public static void removeBan(CommandSender sender, String playerName, String[] args) {
+    public static void removeBan(CommandSender admin, String[] args) 
+    {
+        String playerName = args[0]; args[0] = "";
+        
     	ResultSet rs 			= null;
     	String bid 				= null;
-    	Statement st 			= null;
     	
     	String query 			= "";
-    	String unbanReason 		= arrayToString(args).replaceFirst(playerName, "");
+    	
+    	String unbanReason 		= parseReson(args);
     	
     	try {
     		query = String.format("SELECT `bid` FROM %sbans WHERE (`type` = 1 AND `name` = '%s') AND (`length` = '0' OR `ends` > UNIX_TIMESTAMP()) AND `RemoveType` IS NULL;",
@@ -331,129 +307,35 @@ public class EhBansManager{
     				playerName);
     		
     		log.debug(query);
-    		
-    		st =  plugin.sql.createStatement();
-    		
-            rs = st.executeQuery(query);
+    		    		
+            rs = plugin.db.query(query);
     	    
             if(!rs.next())
             {
-           	 	EhUtil.sendMessage(sender, "&cPlayer informado nao Esta Banido");
+           	 	EhUtil.sendMessage(admin, "&c" + plugin.t.s("UNBAN_PLAYERNOBANNED"));
            	 	return;
             }
             
             bid = rs.getString("bid");
     	 
     	}catch (SQLException ex) {
-        	if (ex.getErrorCode() != 1062) {   //Duplicate nick
-        		log.aviso(ex.getMessage());
-        	}
+        	log.aviso(ex.getMessage());
     	}
           
-    	
-    	try {
-	    	query = String.format("UPDATE %sbans SET `RemovedBy` = (SELECT `aid` FROM %sadmins WHERE `user_mc` = '%s'), `RemoveType` = 'U', `RemovedOn` = UNIX_TIMESTAMP(), `ureason` = '%s' WHERE `bid` = %s;",
-	    			plugin.mysql_prefix,
-	    			plugin.mysql_prefix,
-	    			sender.getName(),
-	    			unbanReason,
-	    			bid);
-	    	
-	    	log.debug(query);
-	    	
-	    	st =  plugin.sql.createStatement();
-	    	
-	    	st.executeUpdate(query);
-            
-    	}
-    	catch (SQLException exs) 
-    	{
-    		if (exs.getErrorCode() != 1062) {   //Duplicate nick
-    			log.aviso(exs.getMessage());
-    		}
-    	}
-    	finally
-    	{
-    		if (st != null) 
-    		{
-    			try 
-    			{
-    				st.close();
-    			} catch (SQLException exs){}
-    		}
-    	}
-     	
-    	log.aviso(playerName + " Desbanido por " + sender.getName());
-    	
-    	EhUtil.broadcastMessage(plugin.formatBanMessage(plugin.messageUnban, sender.getName(), playerName, banReson));
-    	
-    }
-    
-    
-    
-    /**
-     * Adiciona IP do Player ao Historico de IPs
-     * 
-     * @param nick
-     * @param ip
-     */
-	public static void addIpToHistory(String nick, String ip) 
-	{
-        PreparedStatement pst = null;
+    	query = String.format("UPDATE %sbans SET `RemovedBy` = (SELECT `aid` FROM %sadmins WHERE `user_mc` = '%s'), `RemoveType` = 'U', `RemovedOn` = UNIX_TIMESTAMP(), `ureason` = '%s' WHERE `bid` = %s;",
+        		plugin.mysql_prefix,
+        		plugin.mysql_prefix,
+        		admin.getName(),
+        		unbanReason,
+        		bid);
         
-        try {
-            pst = plugin.sql_mc.prepareStatement("INSERT INTO `mc_history_ip` (player, ip) VALUES("
-                    + "?,"
-                    + "?"
-                    + ");");
-            
-            pst.setString(1, nick);
-            pst.setString(2, ip);
-            
-            pst.executeUpdate();
-            
-       } catch (SQLException ex) {
-            if (ex.getErrorCode() != 1062) {   //Duplicate nick
-	           	log.aviso(ex.getMessage());
-            }
-       } finally {
-    	   if (pst != null) {
-    		   try {
-    			   pst.close();
-    		   } catch (SQLException ex) {
-    			   
-    		   }
-    	   }
-       }
+        log.debug(query);
+        
+        plugin.db.update(query);
+     	
+    	log.aviso(playerName + " " + plugin.t.s("UNBAN_BY") + " " + admin.getName());
+    	EhUtil.broadcastMessage(plugin.formatBanMessage(plugin.messageUnban, admin.getName(), playerName, unbanReason));
     }
-	
-	
-	
-	/**
-	 * 
-	 * @param arguments
-	 * @param seperator
-	 * @return
-	 */
-	protected static String combineString(final List<String> arguments, final String seperator) 
-	{
-    	final StringBuilder reason = new StringBuilder();
-    	
-        try {
-        	for (final String argument : arguments) 
-        	{
-        		reason.append(argument);
-        		reason.append(seperator);
-        	}
-        	
-        	reason.deleteCharAt(reason.length() - seperator.length());
-        	
-        	return reason.toString();
-        	
-        } catch (final StringIndexOutOfBoundsException e) {
-        	return "Sem Razao Especificada";
-        }
-	}
     
 	
 	
@@ -462,7 +344,7 @@ public class EhBansManager{
 	 * @param stringarray
 	 * @return
 	 */
-    public static String arrayToString(String[] stringarray)
+    public static String parseReson(String[] stringarray)
     {
     	String str = "";
     	
@@ -470,7 +352,58 @@ public class EhBansManager{
     	{
     		str = str + " " + stringarray[i];
     	}
+    	
+    	str = str.trim();
+    	
+    	if(str.isEmpty())
+    	    str = plugin.t.s("BAN_NOREASON");
+    	    
     	return str;
     }
     
+    
+    static String getDate(int seconds)
+    {
+        String date;
+        
+        if(seconds > 0)
+        {
+            long milisec = seconds * 1000;
+            long now = System.currentTimeMillis();
+            
+            long time = now + milisec;
+            
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+            Date resultdate = new Date(time);
+            
+            date = "Até " + sdf.format(resultdate);
+        }
+        else
+        {
+            date = "Permanente";
+        }
+        
+        return date;
+        
+    }
+    
+    
+    /**
+     * Verifica se o Parametro é Numerico
+     * 
+     * @param input
+     * @return
+     */
+    public static boolean isInteger( String input )
+    {
+        try
+        {
+            Integer.parseInt( input );
+            return true;
+        }
+        catch( Exception e)
+        {
+            return false;
+        }
+    }
 }

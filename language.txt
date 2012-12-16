@@ -1,0 +1,57 @@
+MYSQL_CONNECT = "Conectando com o servidor!"
+MYSQL_TABLENOTFOUND = "Tabela nao encontrada. Criando..."
+MYSQL_CONNECTED = "Conexao com o servidor foi estabelecida!"
+MYSQL_ERRORCONNECT = "Houve um problema ao conectar com o servidor!"
+
+UPDATE_SETUP = "Configurando checagem de Atualizaçao"
+UPDATE_NOTCHECK = "Nao foi possivel verificar se existe atualizaçao!"
+UPDATE_1 = "Este servidor parece estar executando uma versão anterior do %s"
+UPDATE_2 = "Versao %s já está disponível"
+UPDATE_3 = "Prioridade: %s"
+UPDATE_4 = "Detalhes:"
+UPDATE_PLAYER = "Há uma atualização para o plugin %s. Prioridade: %s"
+
+ERROR_SOURCEBANS_NOTSETUP1 = "ERRO: Servidor nao cadastrado no SourceBans"
+ERROR_SOURCEBANS_NOTSETUP2 = "IP '%s' PORTA '%d'"
+ERROR_SOURCEBANS_NOTSETUP3 = "Está correto estas informaçoes?"
+
+
+
+BAN_NOREASON = "Sem Razao Especificada"
+BAN_BANNED = "Você foi Banido."
+BAN_BANNED_IP = "Banido - Player Conectado com um IP Banido!"
+BAN_BANNED_NICK = "Banido - Player Conectado com um IP Banido!"
+BAN_MESSAGE_HEADER = "%s por %s"
+BAN_MESSAGE_1 = "Player: "
+BAN_MESSAGE_2 = "Razao: "
+BAN_MESSAGE_3 = "Tempo: %s"
+
+UNBAN_PLAYERNOBANNED = "Player informado nao está Banido"
+UNBAN_BY = "desbanido por"
+
+KICK_MESSAGE_DEFAULT = "Você foi Kicado do Servidor"
+KICK_MESSAGE = "%s foi kicado do servidor"
+KICK_PLAYEROFFLINE = "O Player nao esta Online!"
+
+
+
+COMMAND = "Comando"
+COMMAND_ERROR = "Argumentos Inválidos! Use '/%s help' para ver a lista de Comandos válidos"
+
+CONFIG_RELOAD_ALL = "As configuraçoes foram &2Recarregadas"
+
+COMMAND_BAN_NOPERMISSION = "Voce nao tem prmissao para Banir"
+COMMAND_BAN_HELP1 = "Tempo no formato: 1h = 1 hora, 1d = 1 dia, 1s = 1 semana"
+COMMAND_BAN_HELP2 = "Tempo no formato: 1mi = 1 min, 1m = 1 mês"
+
+COMMAND_UNBAN_NOPERMISSION = "Voce nao tem prmissao para Desbanir"
+
+COMMAND_KICK_NOPERMISSION = "Voce nao tem prmissao para Kicar"
+
+COMMAND_HELP = "Comando Ajuda"
+COMMAND_BAN = "Ban Player"
+COMMAND_UNBAN = "UnBan Player"
+COMMAND_KICK = "Kicka o Player"
+COMMAND_BAN_FAKE = "Envia uma Mensagem Fake de Ban"
+COMMAND_RELOAD_CONFIG = "Recarrega as configuraçoes"
+COMMAND_PLINFO = "Mostra a versao do Plugin"

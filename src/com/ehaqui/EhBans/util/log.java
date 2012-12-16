@@ -13,7 +13,7 @@ public class log {
     {
         plugin = instance;
     }
-    
+
     /**
      *  Log Info
      *  
@@ -45,6 +45,20 @@ public class log {
         log.warning(plugin.pluginName + String.format(text, txt));
     }
     
+    /**
+     * Log Severe
+     * 
+     * @param text
+     */
+    public static void severe(String text) 
+    {
+        log.severe(plugin.pluginName + text);
+    }
+    
+    public static void severe(String text, Object... txt)
+    {
+        log.severe(plugin.pluginName + String.format(text, txt));
+    }
     
     /**
      * Log Debug

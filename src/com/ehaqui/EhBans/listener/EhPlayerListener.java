@@ -21,15 +21,13 @@ import com.ehaqui.EhBans.util.log;
 public class EhPlayerListener implements Listener {
 
     public static EhBans plugin;
-
-    boolean alternative;
     
     public EhPlayerListener(EhBans instance) {
         plugin = instance;
     }
     
     
-    @EventHandler(priority = EventPriority.HIGHEST)
+    @EventHandler(priority = EventPriority.HIGH)
     public void onPlayerLogin(PlayerLoginEvent event) 
     {
     	Player player = event.getPlayer();
@@ -42,19 +40,13 @@ public class EhPlayerListener implements Listener {
         } 
     	
     	
-    	if (!event.getResult().equals(Result.ALLOWED))
-            return;
-    	
-    	alternative = false;
-    	
         String playerName 		= event.getPlayer().getName();
-		String playerIP 		= event.getKickMessage();
+        String playerIP         = event.getAddress().getHostAddress();
 		String playerHostname 	= "";
 		
 		if (playerIP == "" || playerIP == null) 
 		{
-			log.info("Warning! Couldn't load "+playerName +"'s IP. Possibly plugins conflict. Using alternative method."); 
-			alternative = true; 
+			log.severe("Warning! Couldn't load "+playerName +"'s IP. Possibly plugins conflict"); 
 			return;
 		}
 		
@@ -67,9 +59,6 @@ public class EhPlayerListener implements Listener {
 			log.info(playerName + " connected. Detected ip: " + playerIP + " Detected hostname: " + playerHostname);
 		}
 		
-		if(plugin.logIps)
-		    EhBansManager.addIpToHistory(playerName, playerIP);
-		
     	if(EhBansManager.checkBan(playerName, playerIP))
     	{
         	EhBansManager.addBlockBan(playerName, playerIP);
@@ -79,55 +68,9 @@ public class EhPlayerListener implements Listener {
     }
     
     
-    @EventHandler(priority = EventPriority.HIGHEST)
+    @EventHandler(priority = EventPriority.HIGH)
     public void onPlayerJoin(PlayerJoinEvent event) 
-    {
-        Player player = event.getPlayer();
-        
-        // Update 
-        if (EhUtil.hasPermission(player, "admin")) {
-            try {
-                if (plugin.newVersion > plugin.currentVersion) {
-                    player.sendMessage(plugin.newVersion + " is out! You are running " + plugin.currentVersion);
-                    player.sendMessage("Update at: http://dev.bukkit.org/server-mods/ehbans");
-                }
-            } catch (Exception e) {
-                // Ignore exceptions
-            }
-        }
-        
-        
-    	if (alternative == true) 
-    	{
- 			String playerName 		= event.getPlayer().getName();
-    		String playerIP  		= event.getPlayer().getAddress().getAddress().getHostAddress();
- 			String playerHostname 	= "";
- 			
- 			if (playerIP == "" || playerIP == null) 
- 			{
- 				log.info("Warning! Couldn't load "+ playerName +"'s IP. Possibly plugins conflict"); 
- 			}
- 			
- 			if(plugin.debug)
- 			{
- 				try{
- 					playerHostname = InetAddress.getByName(playerIP).getHostName();
- 				}catch (UnknownHostException e) {}
- 		
- 				log.info(playerName + " connected. Detected ip: " + playerIP + " Detected hostname: " + playerHostname);
- 			}
- 			
- 			if(plugin.logIps)
- 			    EhBansManager.addIpToHistory(playerName, playerIP);
- 			
- 	    	if(EhBansManager.checkBan(playerName, playerIP))
- 	    	{
- 	        	event.getPlayer().kickPlayer(EhUtil.colorize(plugin.messageBan));
- 	        	
- 	        	if(plugin.logBlock)
-                    EhBansManager.addBlockBan(playerName, playerIP);
- 			}
-    	}
+    {    
     }
 
     
