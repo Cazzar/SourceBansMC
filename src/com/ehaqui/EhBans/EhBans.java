@@ -2,6 +2,7 @@ package com.ehaqui.EhBans;
 
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import cokoc.translate.PluginHook;
 import cokoc.translate.Translate;
@@ -10,49 +11,51 @@ import com.ehaqui.EhBans.commands.EhCommands;
 import com.ehaqui.EhBans.listener.EhPlayerListener;
 import com.ehaqui.EhBans.util.*;
 
-public class EhBans extends JavaPlugin {
-    
-    public String pluginName                = "";
-    public String pluginVersion             = "";
-    public String pluginPrefix              = "&7[&6Eh &aBans&7]&f";
-    public String pluginCommand             = "ehbans";
-    public String prefixPermission          = "ehbans";
-    
-    public EhDatabase db = null;;
-    
-    public EhBansManager EhBansManager      = new EhBansManager(this);
-    public EhUtil EhUtil                    = new EhUtil(this);
-    public log logManager                   = new log(this);
-    public EhUpdater updater;
-    public PluginHook t;
-        
-    // Configuração
-    public boolean debug                    = false;
-    public boolean updateCheck              = true;
-    
-    public boolean logBlock                 = true;
-    
-        // Config SourceBans
-    public String mysql_host                = "localhost";
-    public String mysql_port                = "3306";
-    public String mysql_username            = "root";
-    public String mysql_password            = "";
-    public String mysql_database            = "ehaqui_sourcebans";
-    public String mysql_prefix              = "sb_";
-    
-    public String messageBan                = "&cVoce foi Banido";
-    public String messageUnban              = "Player &c&l{player} &rfoi desbanido por &c&l{admin}&r. Razao: {reson}";
 
-    public String lastBanReson              = "";
-    public boolean banIP                    = true;
+public class EhBans extends JavaPlugin
+{
     
-     
-    public void onEnable() 
+    public String        pluginName       = "";
+    public String        pluginVersion    = "";
+    public String        pluginPrefix     = "&7[&6Eh &aBans&7]&f";
+    public String        pluginCommand    = "ehbans";
+    public String        prefixPermission = "ehbans";
+    
+    public EhDatabase    db               = null;                                                                    ;
+    
+    public EhBansManager EhBansManager    = new EhBansManager(this);
+    public EhUtil        EhUtil           = new EhUtil(this);
+    public log           logManager       = new log(this);
+    public EhUpdater     updater;
+    public PluginHook    t;
+    
+    // Configuração
+    public boolean       debug            = false;
+    public boolean       updateCheck      = true;
+    
+    public boolean       logBlock         = true;
+    
+    // Config SourceBans
+    public String        mysql_host       = "localhost";
+    public String        mysql_port       = "3306";
+    public String        mysql_username   = "root";
+    public String        mysql_password   = "";
+    public String        mysql_database   = "ehaqui_sourcebans";
+    public String        mysql_prefix     = "sb_";
+    
+    public String        messageBan       = "&cVoce foi Banido";
+    public String        messageUnban     = "Player &c&l{player} &rfoi desbanido por &c&l{admin}&r. Razao: {reson}";
+    
+    public String        lastBanReson     = "";
+    public boolean       banIP            = true;
+    
+    
+    public void onEnable()
     {
         t = Translate.getPluginHook(this);
         
-        pluginName      = "[" +getDescription().getName() + "] ";
-        pluginVersion   = getDescription().getVersion();
+        pluginName = "[" + getDescription().getName() + "] ";
+        pluginVersion = getDescription().getVersion();
         
         loadConfiguration();
         
@@ -73,24 +76,27 @@ public class EhBans extends JavaPlugin {
         setupCheckUpdate();
     }
     
-
-
-    public void onDisable() 
+    
+    
+    public void onDisable()
     {
         db.close();
-    }   
+    }
     
-    public void setupMySQL() 
+    public void setupMySQL()
     {
         log.info("MYSQL " + t.s("MYSQL_CONNECT"));
-
+        
         db = new EhDatabase(mysql_host, mysql_port, mysql_database, mysql_username, mysql_password);
         
         db.open();
         
-        if(!db.isClosed()){
+        if(!db.isClosed())
+        {
             log.info("MySQL Databese SourceBans! " + t.s("MYSQL_CONNECTED"));
-        }else{
+        }
+        else
+        {
             log.aviso("MySQL Databese SourceBans! " + t.s("MYSQL_ERRORCONNECT"));
             getServer().getPluginManager().disablePlugin(this);
             return;
@@ -98,7 +104,7 @@ public class EhBans extends JavaPlugin {
         
     }
     
-
+    
     public void loadConfiguration()
     {
         getConfig().addDefault("debug", debug);
@@ -123,26 +129,26 @@ public class EhBans extends JavaPlugin {
         saveConfig();
         
         
-        debug                           = getConfig().getBoolean("debug");
-        updateCheck                     = getConfig().getBoolean("update.check");
+        debug = getConfig().getBoolean("debug");
+        updateCheck = getConfig().getBoolean("update.check");
         
-        logBlock                        = getConfig().getBoolean("log.block");
+        logBlock = getConfig().getBoolean("log.block");
         
-        mysql_host                      = getConfig().getString("database.sourcebans.host");
-        mysql_port                      = getConfig().getString("database.sourcebans.port");
-        mysql_username                  = getConfig().getString("database.sourcebans.username");
-        mysql_password                  = getConfig().getString("database.sourcebans.password");
-        mysql_database                  = getConfig().getString("database.sourcebans.database");
-        mysql_prefix                    = getConfig().getString("database.sourcebans.prefix");
-         
-        messageBan                      = getConfig().getString("message.ban");
-        messageUnban                    = getConfig().getString("message.unban");
+        mysql_host = getConfig().getString("database.sourcebans.host");
+        mysql_port = getConfig().getString("database.sourcebans.port");
+        mysql_username = getConfig().getString("database.sourcebans.username");
+        mysql_password = getConfig().getString("database.sourcebans.password");
+        mysql_database = getConfig().getString("database.sourcebans.database");
+        mysql_prefix = getConfig().getString("database.sourcebans.prefix");
         
-        banIP                           = getConfig().getBoolean("ban.ip");
-                  
+        messageBan = getConfig().getString("message.ban");
+        messageUnban = getConfig().getString("message.unban");
+        
+        banIP = getConfig().getBoolean("ban.ip");
+        
         setupMySQL();
     }
-
+    
     public String formatBanMessage(String message, String adminName, String playerName, String reason)
     {
         message = message.replace("{admin}", adminName);
@@ -151,8 +157,8 @@ public class EhBans extends JavaPlugin {
         
         return message;
     }
-      
-      
+    
+    
     public void setupCheckUpdate()
     {
         if(!updateCheck)
@@ -161,20 +167,18 @@ public class EhBans extends JavaPlugin {
         }
         
         log.info(t.s("UPDATE_SETUP"));
-
-        getServer().getScheduler().scheduleAsyncRepeatingTask(this, new Runnable() {
-
+        
+        new BukkitRunnable() {
             @Override
-            public void run() 
+            public void run()
             {
                 updater.loadLatestVersion();
                 
-                if (updater.isUpdateAvailable())
+                if(updater.isUpdateAvailable())
                 {
                     updater.printMessage();
                 }
             }
-
-        }, 20 * 3, 20 * 60 * 60 * 1);
+        }.runTaskTimerAsynchronously(this, 20 * 3, 20 * 60 * 60 * 1);
     }
 }
