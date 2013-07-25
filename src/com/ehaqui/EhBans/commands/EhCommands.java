@@ -263,7 +263,7 @@ public class EhCommands implements CommandExecutor{
     	}
     }
 
-    public void onVersionCommand(CommandSender sender)
+    public void onVersionCommand(CommandSender sender   )
     {
     	EhUtil.sendMessage(sender,"");
     	EhUtil.sendMessage(sender, plugin.pluginPrefix + " Informacoes  &8-----------------");

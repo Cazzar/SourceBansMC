@@ -17,8 +17,8 @@ public class EhBans extends JavaPlugin {
     public String pluginName = "";
     public String pluginVersion = "";
     public final String pluginPrefix = "&7[&6SourceBansMC&7]&f";
-    public final String pluginCommand = "mcsbans";
-    public final String prefixPermission = "mcsbans";
+    public final String pluginCommand = "ehbans";
+    public final String prefixPermission = "ehbans";
 
     public EhDatabase db = null;
 

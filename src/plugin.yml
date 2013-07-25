@@ -1,0 +1,22 @@
+name: EhBans
+main: com.ehaqui.EhBans.EhBans
+version: 0.6.7.4
+author: Lucas Didur
+description: Manage Bans With SourceBans
+commands:
+    ehbans:
+        description: 'Show main menu'
+        usage: '/ehban <comandos>'
+        aliases: [ebans]
+    fban:
+        description: 'Bans a specified player from the server.'
+        usage: '/fban <reason>'
+    ban:
+        description: 'Bans a specified player from the server.'
+        usage: '/ban [player] <time> <reason>'
+    unban:
+        description: 'Bans a specified player from the server.'
+        usage: '/unban [player] [reason]'
+    kick:
+        description: 'Bans a specified player from the server.'
+        usage: '/kick [player]'
