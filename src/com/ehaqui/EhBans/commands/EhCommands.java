@@ -31,7 +31,7 @@ public class EhCommands implements CommandExecutor{
 	    	if(args.length > 0){
 	    		onBanCommand(sender, args);
 	    	}else{
-		    	EhUtil.sendMessage(sender, EhBans.pluginPrefix + " Ban  &8-----------------");
+		    	EhUtil.sendMessage(sender, plugin.pluginPrefix + " Ban  &8-----------------");
 		    	EhUtil.sendMessage(sender, "&c/ban [player] [tempo] [reason]");
 		    	EhUtil.sendMessage(sender, "");
 		    	EhUtil.sendMessage(sender, "&fTime format: 1h = 1 hour, 1d = 1 day, 1 week = 1s");
@@ -51,7 +51,7 @@ public class EhCommands implements CommandExecutor{
                 if (args.length > 0) {
                     onUnbanCommand(sender, args);
                 } else {
-                    EhUtil.sendMessage(sender, EhBans.pluginPrefix + " Unban  &8-----------------");
+                    EhUtil.sendMessage(sender, plugin.pluginPrefix + " Unban  &8-----------------");
                     EhUtil.sendMessage(sender, "&c/unban [player] [reason]");
                     EhUtil.sendMessage(sender, "");
 
@@ -103,7 +103,7 @@ public class EhCommands implements CommandExecutor{
 
             } else if (command.getName().equalsIgnoreCase("ehbans") || command.getName().equalsIgnoreCase("ebans")) {
                 if (args.length == 0 || args[0].equalsIgnoreCase("?") || args[0].equalsIgnoreCase("help")) {
-                    onBanHelpCommand(sender, args);
+                    onBanHelpCommand(sender);
 
                     success = true;
 
@@ -113,11 +113,11 @@ public class EhCommands implements CommandExecutor{
 
                     if (!EhUtil.has(sender, "admin", false)) {
                         success = true;
-                        return true;
+                        return success;
                     }
 
                     if (args[1].equalsIgnoreCase("info")) {
-                        getSBInfo(sender, args);
+                        getSBInfo(sender);
                         success = true;
                     } else
                         success = false;
@@ -128,10 +128,10 @@ public class EhCommands implements CommandExecutor{
 
                     if (!EhUtil.has(sender, "admin", false)) {
                         success = true;
-                        return true;
+                        return success;
                     }
 
-                    onReloadCommand(sender, args);
+                    onReloadCommand(sender);
 
                     success = true;
 
@@ -139,7 +139,7 @@ public class EhCommands implements CommandExecutor{
                     // Comando Mostrar Versao
                 } else if (args[0].equalsIgnoreCase("versao")) {
 
-                    onVersionCommand(sender, args);
+                    onVersionCommand(sender);
 
                     success = true;
                 }
@@ -156,7 +156,7 @@ public class EhCommands implements CommandExecutor{
 
 
 
-	private void getSBInfo(CommandSender sender, String[] args)
+	private void getSBInfo(CommandSender sender)
 	{
 
 	    String srvIP     = plugin.getServer().getIp();
@@ -174,7 +174,7 @@ public class EhCommands implements CommandExecutor{
     /*
 	  * Comando Mostrar Uso do Chat
 	  */
-	public void onBanHelpCommand(CommandSender sender, String[] args)
+	public void onBanHelpCommand(CommandSender sender)
 	{
     	EhUtil.sendMessage(sender,"");
     	EhUtil.sendMessage(sender, plugin.pluginPrefix + "Command Help &8-----------------");
@@ -203,7 +203,7 @@ public class EhCommands implements CommandExecutor{
     /*
      *  Reload config command
      */
-    public void onReloadCommand(CommandSender sender, String[] args)
+    public void onReloadCommand(CommandSender sender)
     {
     	plugin.loadConfiguration();
 
@@ -263,7 +263,7 @@ public class EhCommands implements CommandExecutor{
     	}
     }
 
-    public void onVersionCommand(CommandSender sender, String[] args)
+    public void onVersionCommand(CommandSender sender)
     {
     	EhUtil.sendMessage(sender,"");
     	EhUtil.sendMessage(sender, plugin.pluginPrefix + " Informacoes  &8-----------------");

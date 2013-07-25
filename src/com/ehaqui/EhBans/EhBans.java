@@ -11,16 +11,16 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
 
+@SuppressWarnings("UnusedDeclaration")
 public class EhBans extends JavaPlugin {
 
-    public static String pluginName = "";
-    public static String pluginVersion = "";
-    public static final String pluginPrefix = "&7[&6SourceBansMC&7]&f";
-    public static final String pluginCommand = "mcsbans";
-    public static final String prefixPermission = "mcsbans";
+    public String pluginName = "";
+    public String pluginVersion = "";
+    public final String pluginPrefix = "&7[&6SourceBansMC&7]&f";
+    public final String pluginCommand = "mcsbans";
+    public final String prefixPermission = "mcsbans";
 
     public EhDatabase db = null;
-    ;
 
     public EhBansManager EhBansManager = new EhBansManager(this);
     public EhUtil EhUtil = new EhUtil(this);
