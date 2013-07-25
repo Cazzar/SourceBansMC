@@ -49,7 +49,7 @@ public class EhDatabase {
 
             return conn;
         } catch (Exception e) {
-            log.aviso(e.getMessage());
+            LogHelper.warning(e.getMessage());
         }
         return null;
     }
@@ -61,7 +61,7 @@ public class EhDatabase {
             try {
                 conn.close();
             } catch (Exception e) {
-            	log.aviso(e.getMessage());
+            	LogHelper.warning(e.getMessage());
             }
         }
     }
@@ -94,7 +94,7 @@ public class EhDatabase {
                 return false;
             
         } catch (Exception e) {
-        	log.aviso(e.getMessage());
+        	LogHelper.warning(e.getMessage());
             return false;
         }
     }
@@ -119,7 +119,7 @@ public class EhDatabase {
             statement.execute(query);
             
         } catch (Exception e) {
-        	log.aviso(e.getMessage());
+        	LogHelper.warning(e.getMessage());
         }
         return true;
     }
@@ -135,7 +135,7 @@ public class EhDatabase {
         } catch (Exception e) {
             if (!e.getMessage().contains("not return ResultSet") || (e.getMessage().contains("not return ResultSet") && query.startsWith("SELECT"))) 
             {
-            	log.aviso(e.getMessage());
+            	LogHelper.warning(e.getMessage());
             }
         }
         return null;
@@ -152,7 +152,7 @@ public class EhDatabase {
             
         } catch (Exception e) {
 
-            log.aviso(e.getMessage());
+            LogHelper.warning(e.getMessage());
             return false;
         }
     }
@@ -232,7 +232,7 @@ public class EhDatabase {
                 return null;
             }
         } catch (Exception e) {
-            log.aviso(e.getMessage());
+            LogHelper.warning(e.getMessage());
         }
         return null;
     }

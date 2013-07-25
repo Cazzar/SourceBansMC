@@ -103,7 +103,7 @@ public class EhUtil {
                 String colorsStr = "([§|&][0-9|a-r])";
                 messages[x] = messages[x].replaceAll(colorsStr, "");
                 
-                log.info(messages[x]); 
+                LogHelper.info(messages[x]);
             }
         }
     }
@@ -125,7 +125,7 @@ public class EhUtil {
                 messages[x] = messages[x].replaceAll(colorsStr, "");
                 
                 
-                log.info(String.format(messages[x], txt)); 
+                LogHelper.info(String.format(messages[x], txt));
             }
         }
     }
@@ -133,7 +133,7 @@ public class EhUtil {
     
     /**
      * 
-     * @param sender
+     * @param player
      * @param message
      * @param prefix
      */
@@ -198,7 +198,7 @@ public class EhUtil {
                     messages[x] = colorize(messages[x]);
                     messages[x] = messages[x].replaceAll("([§|&][0-9|a-r])", "");
                     
-                    log.info(messages[x]); 
+                    LogHelper.info(messages[x]);
                 }
                     
             }
@@ -218,7 +218,7 @@ public class EhUtil {
                     messages[x] = colorize(messages[x]);
                     messages[x] = messages[x].replaceAll("([§|&][0-9|a-r])", "");
                     
-                    log.info(messages[x]); 
+                    LogHelper.info(messages[x]);
                 }
             }
         }

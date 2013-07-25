@@ -43,7 +43,7 @@ public class EhUpdater
             priority    = getPriority(Integer.parseInt(split[1]));
             
         } catch (IOException e) {
-            log.aviso("Could not check for newer version!");
+            LogHelper.warning("Could not check for newer version!");
             latestVer = null;
         } finally {
             try {
@@ -58,13 +58,13 @@ public class EhUpdater
     	switch (level)
     	{
     		case 0:
-    			return "BAIXO";
+    			return "LOW";
     		case 1:
     			return "NORMAL";
     		case 2:
-    			return "MEDIO";
+    			return "MEDIUM";
     		case 3:
-    			return "ALTA";
+    			return "HIGH";
     			
     	}
     	
@@ -81,40 +81,40 @@ public class EhUpdater
 
     private int compareVer(String str1, String str2) 
     {
-        String[] vals1 = str1.split("\\.");
-        String[] vals2 = str2.split("\\.");
+        String[] val1 = str1.split("\\.");
+        String[] val2 = str2.split("\\.");
         int i = 0;
 
-        while (i < vals1.length && i < vals2.length && vals1[i].equals(vals2[i]))
+        while (i < val1.length && i < val2.length && val1[i].equals(val2[i]))
             i++;
 
-        if (i < vals1.length && i < vals2.length) 
+        if (i < val1.length && i < val2.length)
         {
-            int diff = new Integer(vals1[i]).compareTo(new Integer(vals2[i]));
+            int diff = new Integer(val1[i]).compareTo(new Integer(val2[i]));
             return diff < 0 ? -1 : diff == 0 ? 0 : 1;
         }
 
-        return vals1.length < vals2.length ? -1 : vals1.length == vals2.length ? 0 : 1;
+        return val1.length < val2.length ? -1 : val1.length == val2.length ? 0 : 1;
     }
 
     
     public void printMessage() 
     {
-    	log.aviso("");
-        log.aviso("-------- EhAqui Updater --------");
-        log.aviso(plugin.t.s("UPDATE_1"), plName);
-        log.aviso(plugin.t.s("UPDATE_2"), latestVer);
-        log.aviso("");
-        log.aviso(plugin.t.s("UPDATE_3"), priority);
-        log.aviso(plugin.t.s("UPDATE_4") +" http://dev.bukkit.org/server-mods/" + plName.toLowerCase() + "/");
-        log.aviso("-------------------------------");
-        log.aviso("");
+    	LogHelper.warning("");
+        LogHelper.warning("-------- EhAqui Updater --------");
+        LogHelper.warning("There is an update to: ", plName);
+        LogHelper.warning("Version: ", latestVer);
+        LogHelper.warning("");
+        LogHelper.warning("Priority: ", priority);
+        LogHelper.warning("Download location: http://dev.bukkit.org/server-mods/" + plName.toLowerCase() + "/");
+        LogHelper.warning("-------------------------------");
+        LogHelper.warning("");
     }
     
     
     public void printMessageLitle(Player player) 
     {
         EhUtil.sendMessage(player, "");
-        EhUtil.sendMessage(player, String.format("&c" + plugin.t.s("UPDATE_PLAYER"), plName, priority));
+        EhUtil.sendMessage(player, String.format("&cThere is an update for %s with priority %s", plName, priority));
     }
 }

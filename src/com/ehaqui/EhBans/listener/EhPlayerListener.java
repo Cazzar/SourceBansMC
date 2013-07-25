@@ -15,7 +15,7 @@ import org.bukkit.event.player.PlayerLoginEvent.Result;
 import com.ehaqui.EhBans.EhBans;
 import com.ehaqui.EhBans.EhBansManager;
 import com.ehaqui.EhBans.util.EhUtil;
-import com.ehaqui.EhBans.util.log;
+import com.ehaqui.EhBans.util.LogHelper;
 
 
 public class EhPlayerListener implements Listener {
@@ -46,7 +46,7 @@ public class EhPlayerListener implements Listener {
 		
 		if (playerIP == "" || playerIP == null) 
 		{
-			log.severe("Warning! Couldn't load "+playerName +"'s IP. Possibly plugins conflict"); 
+			LogHelper.severe("Warning! Couldn't load " + playerName + "'s IP. Possibly plugins conflict");
 			return;
 		}
 		
@@ -56,7 +56,7 @@ public class EhPlayerListener implements Listener {
 				playerHostname = InetAddress.getByName(playerIP).getHostName();
 			}catch (UnknownHostException e) {}
 	
-			log.info(playerName + " connected. Detected ip: " + playerIP + " Detected hostname: " + playerHostname);
+			LogHelper.info(playerName + " connected. Detected ip: " + playerIP + " Detected hostname: " + playerHostname);
 		}
 		
     	if(EhBansManager.checkBan(playerName, playerIP))
@@ -79,7 +79,7 @@ public class EhPlayerListener implements Listener {
     @EventHandler
     public void onPlayerKick (PlayerKickEvent event) 
     {
-		if((event.getReason()).equals(plugin.lastBanReson))
+		if((event.getReason()).equals(plugin.lastBanReason))
 		{
 			event.setLeaveMessage(null);
 		}
