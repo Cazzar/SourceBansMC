@@ -1,12 +1,12 @@
 name: EhBans
-main: com.ehaqui.EhBans.EhBans
+main: net.cazzar.bukkit.EhBans.EhBans
 version: 0.6.7.4
 author: Lucas Didur
 description: Manage Bans With SourceBans
 commands:
     ehbans:
         description: 'Show main menu'
-        usage: '/ehban <comandos>'
+        usage: '/ehban <commands>'
         aliases: [ebans]
     fban:
         description: 'Bans a specified player from the server.'
