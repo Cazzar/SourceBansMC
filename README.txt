@@ -1,1 +1,0 @@
-EhBans - Gerenciador de Bans para o Minecraf
