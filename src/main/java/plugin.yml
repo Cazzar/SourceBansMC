@@ -1,0 +1,21 @@
+name: sourcebansmc
+main: net.cazzar.bukkit.sourcebansmcbansmc.sourcebansmc
+version: 10.0.
+author: cazzar
+description: Manage Bans With SourceBans
+commands:
+    sourcebans:
+        description: 'Show main menu'
+        usage: '/sourcebans <commands>'
+    fban:
+        description: 'Bans a specified player from the server.'
+        usage: '/fban <reason>'
+    ban:
+        description: 'Bans a specified player from the server.'
+        usage: '/ban [player] <time> <reason>'
+    unban:
+        description: 'Bans a specified player from the server.'
+        usage: '/unban [player] [reason]'
+    kick:
+        description: 'Bans a specified player from the server.'
+        usage: '/kick [player]'
