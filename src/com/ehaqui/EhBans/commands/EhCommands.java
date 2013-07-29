@@ -1,46 +1,36 @@
 package com.ehaqui.EhBans.commands;
 
+import com.ehaqui.EhBans.EhBans;
+import com.ehaqui.EhBans.EhBansManager;
+import com.ehaqui.EhBans.util.EhUtil;
+import com.ehaqui.EhBans.util.LogHelper;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import com.ehaqui.EhBans.EhBans;
-import com.ehaqui.EhBans.EhBansManager;
-import com.ehaqui.EhBans.util.EhUtil;
+public class EhCommands implements CommandExecutor {
 
-public class EhCommands implements CommandExecutor{
+    public static EhBans plugin;
 
-	 public static EhBans plugin;
-
-	 public EhCommands(EhBans instance) {
-		 plugin = instance;
-	 }
+    public EhCommands(EhBans instance) {
+        plugin = instance;
+    }
 
 
-	 public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-	    boolean success = false;
+    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+        boolean success = false;
 
-	    if(command.getName().equalsIgnoreCase("ban")){
+        if (command.getName().equalsIgnoreCase("ban")) {
 
-	    	if(!EhUtil.has(sender, "ban")){
-	        	EhUtil.sendMessage(sender, "&cYou do not have permission to Ban");
-	        	return true;
-	    	}
+            if (!EhUtil.has(sender, "ban")) {
+                EhUtil.sendMessage(sender, "&cYou do not have permission to Ban");
+                return true;
+            }
+            onBanCommand(sender, args);
+            success = true;
 
-	    	if(args.length > 0){
-	    		onBanCommand(sender, args);
-	    	}else{
-		    	EhUtil.sendMessage(sender, plugin.pluginPrefix + " Ban  &8-----------------");
-		    	EhUtil.sendMessage(sender, "&c/ban [player] [tempo] [reason]");
-		    	EhUtil.sendMessage(sender, "");
-		    	EhUtil.sendMessage(sender, "&fTime format: 1h = 1 hour, 1d = 1 day, 1 week = 1s");
-		    	EhUtil.sendMessage(sender, "&fTime format: 1mi = 1 min, 1 months = 1m");
-	    	}
-
-	    	success = true;
-
-	    }else {
+        } else {
             if (command.getName().equalsIgnoreCase("unban")) {
 
                 if (!EhUtil.has(sender, "unban")) {
@@ -137,7 +127,7 @@ public class EhCommands implements CommandExecutor{
 
 
                     // Comando Mostrar Versao
-                } else if (args[0].equalsIgnoreCase("versao")) {
+                } else if (args[0].equalsIgnoreCase("version")) {
 
                     onVersionCommand(sender);
 
@@ -147,77 +137,78 @@ public class EhCommands implements CommandExecutor{
         }
 
 
-	    if (!success) {
-	    	EhUtil.sendMessage(sender, "&cInvalid Arguments! Use '/%s help' for a list of valid commands", plugin.pluginCommand);
-	    }
+        if (!success) {
+            EhUtil.sendMessage(sender, "&cInvalid Arguments! Use '/%s help' for a list of valid commands", plugin.pluginCommand);
+        }
 
-		return true;
-	}
+        return true;
+    }
 
 
+    private void getSBInfo(CommandSender sender) {
 
-	private void getSBInfo(CommandSender sender)
-	{
+        String srvIP = plugin.getServer().getIp();
+        int srvPort = plugin.getServer().getPort();
 
-	    String srvIP     = plugin.getServer().getIp();
-	    int srvPort      = plugin.getServer().getPort();
-
-	    EhUtil.sendMessage(sender,"");
-	    EhUtil.sendMessage(sender, true, "SourceBans Info &8-----------------");
-	    EhUtil.sendMessage(sender,"");
-	    EhUtil.sendMessage(sender,"&cIP:    &e%s", srvIP);
-	    EhUtil.sendMessage(sender,"&cPorta: &e%s", srvPort);
-	    EhUtil.sendMessage(sender,"");
+        EhUtil.sendMessage(sender, "");
+        EhUtil.sendMessage(sender, true, "SourceBans Info &8-----------------");
+        EhUtil.sendMessage(sender, "");
+        EhUtil.sendMessage(sender, "&cIP:    &e%s", srvIP);
+        EhUtil.sendMessage(sender, "&cPorta: &e%s", srvPort);
+        EhUtil.sendMessage(sender, "");
     }
 
 
     /*
-	  * Comando Mostrar Uso do Chat
+      * Comando Mostrar Uso do Chat
 	  */
-	public void onBanHelpCommand(CommandSender sender)
-	{
-    	EhUtil.sendMessage(sender,"");
-    	EhUtil.sendMessage(sender, plugin.pluginPrefix + "Command Help &8-----------------");
-    	EhUtil.sendMessage(sender, "");
+    public void onBanHelpCommand(CommandSender sender) {
+        EhUtil.sendMessage(sender, "");
+        EhUtil.sendMessage(sender, plugin.pluginPrefix + "Command Help &8-----------------");
+        EhUtil.sendMessage(sender, "");
 
-    	if(EhUtil.has(sender, "ban"))
-    		EhUtil.sendMessage(sender, "/ban [player] [time] [reason]  - &7Ban player");
+        if (EhUtil.has(sender, "ban")) {
+            EhUtil.sendMessage(sender, "/ban [player] [time] [reason]  - &7Ban player");
+            EhUtil.sendMessage(sender, "Time: 1 = 1 second, 1m = 1 minute, 1h = 1 hour, 1d = 1 day, 1w = 1 week, 1mo = 1 month");
+        }
 
-    	if(EhUtil.has(sender, "unban"))
-    		EhUtil.sendMessage(sender, "/unban [player] [reason]  - &7Unban player");
+        if (EhUtil.has(sender, "unban"))
+            EhUtil.sendMessage(sender, "/unban [player] [reason]  - &7Unban player");
 
-    	if(EhUtil.has(sender, "kick"))
-    		EhUtil.sendMessage(sender, "/kick [player] <reason>  - &7Kick player");
+        if (EhUtil.has(sender, "kick"))
+            EhUtil.sendMessage(sender, "/kick [player] <reason>  - &7Kick player");
 
-    	if(EhUtil.has(sender, "fban"))
-    		EhUtil.sendMessage(sender, "/fban <reaon>  - &7Fake banning player [TEST]");
+        if (EhUtil.has(sender, "fban"))
+            EhUtil.sendMessage(sender, "/fban <reaon>  - &7Fake banning player [TEST]");
 
-        if(EhUtil.has(sender, "reload"))
-        	EhUtil.sendMessage(sender, "/ehban reload  - &7Reload the config file.");
+        if (EhUtil.has(sender, "reload"))
+            EhUtil.sendMessage(sender, "/ehban reload  - &7Reload the config file.");
 
         EhUtil.sendMessage(sender, "/ehban version - &7Get the version.");
-	}
-
+    }
 
 
     /*
      *  Reload config command
      */
-    public void onReloadCommand(CommandSender sender)
-    {
-    	plugin.loadConfiguration();
+    public void onReloadCommand(CommandSender sender) {
+        plugin.loadConfiguration();
 
-    	EhUtil.sendMessage(sender, plugin.pluginPrefix + "&4Reloaded!");
+        EhUtil.sendMessage(sender, plugin.pluginPrefix + "&4Reloaded!");
     }
 
 
     /**
-     *  Ban a player
-     *  @param sender the sender
-     *  @param args The name and other details of the ban
+     * Ban a player
+     *
+     * @param sender the sender
+     * @param args   The name and other details of the ban
      */
-    public void onBanCommand(CommandSender sender, String[] args)
-    {
+    public void onBanCommand(CommandSender sender, String[] args) {
+        if (args.length == 0) {
+            EhUtil.sendMessage(sender, "/ban [player] [time] [reason]  - &7Ban player");
+        }
+        LogHelper.info("Ban Command used!");
         EhBansManager.addBan(sender, args);
     }
 
@@ -225,55 +216,48 @@ public class EhCommands implements CommandExecutor{
     /*
      *  Desbane o Player
      */
-    public void onUnbanCommand(CommandSender sender, String[] args)
-    {
+    public void onUnbanCommand(CommandSender sender, String[] args) {
         EhBansManager.removeBan(sender, args);
     }
 
 
-    private void onKickCommand(CommandSender sender, String[] args)
-    {
-    	Player player = plugin.getServer().getPlayer(args[0]);
+    private void onKickCommand(CommandSender sender, String[] args) {
+        Player player = plugin.getServer().getPlayer(args[0]);
 
-    	if(player != null)
-    	{
-    		args[0] = "";
+        if (player != null) {
+            args[0] = "";
 
-    		String playerName 	= player.getName();
-    		String reason 		= EhUtil.colorize("&cReason: &e" + EhBansManager.parseReason(args));
+            String playerName = player.getName();
+            String reason = EhUtil.colorize("&cReason: &e" + EhBansManager.parseReason(args));
 
-    		if(args.length == 1)
-    			reason ="You have been kicked from the server!";
+            if (args.length == 1)
+                reason = "You have been kicked from the server!";
 
-    		player.kickPlayer(reason);
+            player.kickPlayer(reason);
 
-    		EhUtil.broadcastMessage("");
-        	EhUtil.broadcastMessage("%s by %s", plugin.pluginPrefix, sender.getName());
-        	EhUtil.broadcastMessage("&8-------------------------------");
-    		EhUtil.broadcastMessage("&c%s was kicked from the server", playerName);
+            EhUtil.broadcastMessage("");
+            EhUtil.broadcastMessage("%s by %s", plugin.pluginPrefix, sender.getName());
+            EhUtil.broadcastMessage("&8-------------------------------");
+            EhUtil.broadcastMessage("&c%s was kicked from the server", playerName);
 
-    		if(args.length > 2)
-    			EhUtil.broadcastMessage(reason);
+            if (args.length > 2)
+                EhUtil.broadcastMessage(reason);
 
-        	EhUtil.broadcastMessage("");
-    	}
-    	else
-    	{
-    		EhUtil.sendMessage(sender, "&cThe player is offline!");
-    	}
+            EhUtil.broadcastMessage("");
+        } else {
+            EhUtil.sendMessage(sender, "&cThe player is offline!");
+        }
     }
 
-    public void onVersionCommand(CommandSender sender   )
-    {
-    	EhUtil.sendMessage(sender,"");
-    	EhUtil.sendMessage(sender, plugin.pluginPrefix + " Informacoes  &8-----------------");
-    	EhUtil.sendMessage(sender, "");
-    	EhUtil.sendMessage(sender, "Version: " + plugin.pluginVersion);
-    	//EhUtil.sendMessage(sender, "Desenvolvido por Lucas Didur");
-    	//EhUtil.sendMessage(sender, "Site: http://ehaqui.com");
-    	EhUtil.sendMessage(sender, "");
+    public void onVersionCommand(CommandSender sender) {
+        EhUtil.sendMessage(sender, "");
+        EhUtil.sendMessage(sender, plugin.pluginPrefix + " Informacoes  &8-----------------");
+        EhUtil.sendMessage(sender, "");
+        EhUtil.sendMessage(sender, "Version: " + plugin.pluginVersion);
+        //EhUtil.sendMessage(sender, "Desenvolvido por Lucas Didur");
+        //EhUtil.sendMessage(sender, "Site: http://ehaqui.com");
+        EhUtil.sendMessage(sender, "");
     }
-
 
 
 }

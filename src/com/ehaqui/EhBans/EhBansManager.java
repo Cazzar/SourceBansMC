@@ -2,6 +2,7 @@ package com.ehaqui.EhBans;
 
 import com.ehaqui.EhBans.util.EhUtil;
 import com.ehaqui.EhBans.util.LogHelper;
+import com.sun.istack.internal.NotNull;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -136,138 +137,133 @@ public class EhBansManager {
      * @param args
      * @return
      */
-    public static boolean addBan(CommandSender admin, String[] args) {
-        Player player;
-        String playerName;
-        String playerIP;
-
-        int tempo;
+    public static boolean addBan(@NotNull CommandSender admin, @NotNull String[] args) {
+        Player banned;
+        String bannedIP;
+        int time;
+        String bannedName;
         String reason;
+        String adminName;
+        String adminIP;
+        String serverIP;
+        int serverPort;
 
-        String admName;
-        String admIP = "";
+        LogHelper.info("ban args length is %s", args.length);
 
-        String srvIP;
-        int srvPort;
+        if (args.length == 0) {
+            return false;
+        }
 
-        String unmatchedPlayerName = args[0];
-        player = plugin.getServer().getPlayer(unmatchedPlayerName);
-        playerName = player != null ? player.getName() : unmatchedPlayerName;
+        LogHelper.log.info("Variables init");
+        String unmatchedName = args[0];
+        banned = plugin.getServer().getPlayer(unmatchedName);
+        if (banned == null)
+            bannedName = unmatchedName;
+        else
+            bannedName = banned.getName();
+        bannedIP = plugin.banIP ? banned != null ? banned.getAddress().toString().substring(1).split(":")[0] : "" : "";
 
-        playerIP = plugin.banIP ?
-                player != null ?
-                        player.getAddress().toString().substring(1).split(":")[0] :
-                        "" :
-                "";
 
-
-        tempo = (args.length > 1) ? getTime(args[1]) : 0;
-
+        LogHelper.info("Parsing ban");
+        time = (args.length > 1) ? getTime(args[1]) : 3600;
         args[0] = "";
-
-        if ((tempo != 0))
+        if (time != 3600)
             args[1] = "";
-
-        if (args.length > 1)
-            if (args[1].equals("0"))
-                args[1] = "";
-
 
         reason = banReson = parseReason(args);
 
-        admName = admin.getName();
+        adminName = admin.getName();
 
         if (admin instanceof Player) {
             Player adm = (Player) admin;
-            admIP = adm.getAddress().toString().substring(1).split(":")[0];
-        }
+            adminIP = adm.getAddress().toString().substring(1).split(":")[0];
+        } else
+            adminIP = "";
 
-        srvIP = plugin.getServer().getIp();
-        srvPort = plugin.getServer().getPort();
+        serverIP = plugin.getServer().getIp();
+        serverPort = plugin.getServer().getPort();
 
         PreparedStatement pst = null;
 
         try {
-            String query = String.format("INSERT INTO %sbans " +
-                    "(ip, 	authid, name, created, 			ends, 					length, reason, aid, 														adminIp, sid, 																		country , type) VALUES " +
-                    "('%s', '%s', 	'%s', UNIX_TIMESTAMP(), UNIX_TIMESTAMP() + %d, 	%d, 	'%s', IFNULL((SELECT aid FROM %sadmins WHERE user_mc = '%s'),'0'), '%s',	 (SELECT sid FROM %sservers WHERE ip = '%s' AND port = '%s' LIMIT 0,1), 	' '		, '1')",
-                    plugin.mysql_prefix, playerIP, playerName, playerName, tempo, tempo, reason, plugin.mysql_prefix, admName, admIP, plugin.mysql_prefix, srvIP, srvPort);
+            String query = String.format("INSERT INTO %sbans (ip, authid, name, created, ends, length, reason, aid, adminIp, sid, country , type) VALUES ('%s', '%s', '%s', UNIX_TIMESTAMP(), UNIX_TIMESTAMP() + %d, %d, '%s', IFNULL((SELECT aid FROM %sadmins WHERE user = '%s'),'0'), '%s', (SELECT sid FROM %sservers WHERE ip = '%s' AND port = '%s' LIMIT 0,1), ' ', '1')",
+                    plugin.mysql_prefix, bannedIP, bannedName, bannedName, time, time, reason, plugin.mysql_prefix, adminName, adminIP, plugin.mysql_prefix, serverIP, serverPort);
 
-            LogHelper.debug(query);
+            LogHelper.warning(query);
 
             Statement st = plugin.db.getConnection().createStatement();
             st.executeUpdate(query);
 
-            if (player != null) {
+            if (banned != null) {
                 plugin.lastBanReason = "You have been banned reason:" + banReson;
-                player.kickPlayer(plugin.lastBanReason);
+                banned.kickPlayer(plugin.lastBanReason);
             }
-
             EhUtil.broadcastMessage("");
-            EhUtil.broadcastMessage("%s by %s", plugin.pluginPrefix, "&c" + admName);
+            EhUtil.broadcastMessage("%s by %s", plugin.pluginPrefix, "&c" + adminName);
             EhUtil.broadcastMessage("&8-------------------------------");
-            EhUtil.broadcastMessage("&cPlayer: &e" + playerName);
+            EhUtil.broadcastMessage("&cPlayer: &e" + bannedName);
             EhUtil.broadcastMessage("&cReason: &e" + reason);
-            EhUtil.broadcastMessage("&cTime: &e" + getDate(tempo));
+            EhUtil.broadcastMessage("&cTime: &e" + getDate(time));
             EhUtil.broadcastMessage("");
 
-            return true;
 
-        } catch (SQLException ex) {
-            if (ex.getErrorCode() == 1048) {
+        } catch (SQLException e) {
+            if (e.getErrorCode() == 1048) {
                 LogHelper.warning("ERROR: Server not registered in SourceBans");
-                LogHelper.warning("IP: %s, port: %d ", srvIP, srvPort);
+                LogHelper.warning("IP: %s, port: %d ", serverIP, serverPort);
                 LogHelper.warning("Is this information correct?");
 
                 EhUtil.sendMessage(admin, "&cERROR: Server not registered in SourceBans", true);
+            } else {
+                LogHelper.warning("Error: Unexpected SQL error: code %s", e.getErrorCode());
+                e.printStackTrace();
             }
-
-        } finally {
+        }
+        finally {
             if (pst != null) {
                 try {
                     pst.close();
-                } catch (SQLException ex) {
+                } catch (SQLException e) {
+                    LogHelper.warning("Error: Unexpected SQL error: code %s", e.getErrorCode());
                 }
             }
         }
-
 
         return false;
 
     }
 
-    public static int getTime(String duracao) {
+    public static int getTime(String duration) {
         // Ban 0
         int time = 0;
-
-        // Minutos
-        if (duracao.contains("mi")) {
-            time = Integer.parseInt(duracao.replaceAll("mi", "")) * 60;
+        // Minutes
+        if (duration.contains("m")) {
+            time = Integer.parseInt(duration.replaceAll("mi", "")) * 60;
         }
 
-        // Horas
-        else if (duracao.contains("h")) {
-            time = Integer.parseInt(duracao.replaceAll("h", "")) * 60 * 60;
+        // Hours
+        else if (duration.contains("h")) {
+            time = Integer.parseInt(duration.replaceAll("h", "")) * 60 * 60;
         }
 
-        // Dias
-        else if (duracao.contains("d")) {
-            time = Integer.parseInt(duracao.replaceAll("d", "")) * 60 * 60 * 24;
+        // Days
+        else if (duration.contains("d")) {
+            time = Integer.parseInt(duration.replaceAll("d", "")) * 60 * 60 * 24;
         }
 
-        // Dias
-        else if (duracao.contains("s")) {
-            time = Integer.parseInt(duracao.replaceAll("s", "")) * 60 * 60 * 24 * 7;
+        // Weeks
+        else if (duration.contains("w")) {
+            time = Integer.parseInt(duration.replaceAll("s", "")) * 60 * 60 * 24 * 7;
         }
 
-        // Mes
-        else if (duracao.contains("m")) {
-            time = Integer.parseInt(duracao.replaceAll("m", "")) * 60 * 60 * 24 * 30;
+        // Months
+        else if (duration.contains("mo")) {
+            time = Integer.parseInt(duration.replaceAll("m", "")) * 60 * 60 * 24 * 30;
         }
 
-        // Segundos
-        else if (isInteger(duracao)) {
-            time = Integer.valueOf(duracao);
+        // seconds
+        else if (isInteger(duration)) {
+            time = Integer.valueOf(duration);
         }
 
         return time;
