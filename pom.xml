@@ -23,4 +23,38 @@
             <version>1.6.2-R0.1-20130724.060108-7</version>
         </dependency>
     </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>com.github.danielflower.mavenplugins</groupId>
+                <artifactId>maven-gitlog-plugin</artifactId>
+                <version>1.5.0</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <reportTitle>Changelog for ${project.name} version ${project.version}</reportTitle>
+                    <verbose>true</verbose>
+                    <outputDirectory>target/docs</outputDirectory>
+                    <generatePlainTextChangeLog>true</generatePlainTextChangeLog>
+                    <plainTextChangeLogFilename>changelog-${project.version}.txt</plainTextChangeLogFilename>
+                    <generateSimpleHTMLChangeLog>true</generateSimpleHTMLChangeLog>
+                    <markdownChangeLogFilename>changelog-${project.version}.md</markdownChangeLogFilename>
+                    <generateMarkdownChangeLog>true</generateMarkdownChangeLog>
+                    <simpleHTMLChangeLogFilename>changelog-${project.version}.html</simpleHTMLChangeLogFilename>
+                    <generateHTMLTableOnlyChangeLog>true</generateHTMLTableOnlyChangeLog>
+                    <htmlTableOnlyChangeLogFilename>changelog-${project.version}-tableonly.html
+                    </htmlTableOnlyChangeLogFilename>
+                    <issueManagementSystem>GitHub issue tracker</issueManagementSystem>
+                    <issueManagementUrl>https://github.com/cazzar/SourceBansMC/issues</issueManagementUrl>
+                    <fullGitMessage>true</fullGitMessage>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>

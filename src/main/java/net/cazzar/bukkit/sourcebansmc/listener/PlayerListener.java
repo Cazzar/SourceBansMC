@@ -94,6 +94,4 @@ public class PlayerListener implements Listener {
             event.setLeaveMessage(null);
         }
     }
-
-
 }
