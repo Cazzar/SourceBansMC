@@ -36,13 +36,11 @@ import java.net.UnknownHostException;
 
 @SuppressWarnings({"UnusedDeclaration", "UnusedParameters"})
 public class PlayerListener implements Listener {
-
     private static Bans plugin;
 
     public PlayerListener(Bans instance) {
         plugin = instance;
     }
-
 
     @EventHandler(priority = EventPriority.HIGH)
     public void onPlayerLogin(PlayerLoginEvent event) {
@@ -54,7 +52,6 @@ public class PlayerListener implements Listener {
             event.disallow(PlayerLoginEvent.Result.KICK_OTHER, "Voce ja esta Online");
             return;
         }
-
 
         String playerName = event.getPlayer().getName();
         String playerIP = event.getAddress().getHostAddress();
@@ -81,11 +78,9 @@ public class PlayerListener implements Listener {
         }
     }
 
-
     @EventHandler(priority = EventPriority.HIGH)
     public void onPlayerJoin(PlayerJoinEvent event) {
     }
-
 
     // Remove "x left the game" 
     @EventHandler
