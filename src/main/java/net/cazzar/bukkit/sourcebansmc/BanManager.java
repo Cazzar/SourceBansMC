@@ -1,24 +1,25 @@
-/**************************************************************************************************
- * Copyright (C) 2013 cazzar                                                                      *
- *                                                                                                *
- * This program is free software: you can redistribute it and/or modify                           *
- * it under the terms of the GNU General Public License as published by                           *
- * the Free Software Foundation, either version 3 of the License, or                              *
- * (at your option) any later version.                                                            *
- *                                                                                                *
- * This program is distributed in the hope that it will be useful,                                *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of                                 *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the                                  *
- * GNU General Public License for more details.                                                   *
- *                                                                                                *
- * You should have received a copy of the GNU General Public License                              *
- * along with this program.  If not, see [http://www.gnu.org/licenses/].                          *
- **************************************************************************************************/
+/*
+ * {one line to give the program's name and a brief idea of what it does
+ * Copyright (C) 2013 cazzar
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see [http://www.gnu.org/licenses/].
+ */
 
 package net.cazzar.bukkit.sourcebansmc;
 
-import net.cazzar.bukkit.sourcebansmc.util.LogHelper;
 import net.cazzar.bukkit.sourcebansmc.util.Util;
+import net.cazzar.bukkit.sourcebansmc.util.logging.LogHelper;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -38,7 +39,6 @@ public class BanManager {
      *
      * @param playerName - Nome do Player
      * @param playerIP   - IP do Player
-     *
      * @return true/false
      */
     public static boolean checkBan(String playerName, String playerIP) {
@@ -135,7 +135,6 @@ public class BanManager {
      *
      * @param admin the admin who banned
      * @param args  the name, time and reason to ban
-     *
      * @return true if successful, otherwise false
      */
     @SuppressWarnings("ConstantConditions")
@@ -323,7 +322,6 @@ public class BanManager {
 
     /**
      * @param arr the array
-     *
      * @return the parsed reason
      */
     public static String parseReason(String... arr) {
@@ -368,7 +366,6 @@ public class BanManager {
      * Verify int input as string.
      *
      * @param input a string to try and parse as an int
-     *
      * @return if it is an int
      */
     private static boolean isInteger(String input) {

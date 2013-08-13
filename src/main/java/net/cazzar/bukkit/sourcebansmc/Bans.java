@@ -1,28 +1,30 @@
-/**************************************************************************************************
- * Copyright (C) 2013 cazzar                                                                      *
- *                                                                                                *
- * This program is free software: you can redistribute it and/or modify                           *
- * it under the terms of the GNU General Public License as published by                           *
- * the Free Software Foundation, either version 3 of the License, or                              *
- * (at your option) any later version.                                                            *
- *                                                                                                *
- * This program is distributed in the hope that it will be useful,                                *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of                                 *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the                                  *
- * GNU General Public License for more details.                                                   *
- *                                                                                                *
- * You should have received a copy of the GNU General Public License                              *
- * along with this program.  If not, see [http://www.gnu.org/licenses/].                          *
- **************************************************************************************************/
+/*
+ * {one line to give the program's name and a brief idea of what it does
+ * Copyright (C) 2013 cazzar
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see [http://www.gnu.org/licenses/].
+ */
 
 package net.cazzar.bukkit.sourcebansmc;
 
 import net.cazzar.bukkit.sourcebansmc.commands.*;
 import net.cazzar.bukkit.sourcebansmc.listener.PlayerListener;
 import net.cazzar.bukkit.sourcebansmc.util.Database;
-import net.cazzar.bukkit.sourcebansmc.util.LogHelper;
 import net.cazzar.bukkit.sourcebansmc.util.Updater;
 import net.cazzar.bukkit.sourcebansmc.util.Util;
+import net.cazzar.bukkit.sourcebansmc.util.logging.LogHelper;
+import org.bukkit.ChatColor;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -33,7 +35,7 @@ public class Bans extends JavaPlugin {
 
     public String pluginName = "";
     public String pluginVersion = "";
-    public static final String pluginPrefix = "&7[&6SourceBansMC&7]&f";
+    public static final String pluginPrefix = ChatColor.WHITE + "[" + ChatColor.GREEN + "SourceBansMC" + ChatColor.RESET + "]";
     public final String pluginCommand = "sourcebans";
     public final String prefixPermission = "sourcebans";
 
@@ -75,6 +77,7 @@ public class Bans extends JavaPlugin {
     public void onEnable() {
         //t = Translate.getPluginHook(this);
 
+        instance = this;
         pluginName = "[" + getDescription().getName() + "] ";
         pluginVersion = getDescription().getVersion();
 

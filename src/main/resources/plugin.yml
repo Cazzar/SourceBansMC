@@ -1,5 +1,5 @@
-name: sourcebansmc
-main: net.cazzar.bukkit.sourcebansmcbansmc.Bans
+name: SourceBansMC
+main: net.cazzar.bukkit.sourcebansmc.Bans
 version: 10.0.
 author: cazzar
 description: Manage Bans With SourceBans
