@@ -25,7 +25,7 @@
 
     <groupId>net.cazzar.bukkit</groupId>
     <artifactId>sourcebans-mc</artifactId>
-    <version>1.0.3</version>
+    <version>1.0.4</version>
 
     <repositories>
         <repository>
